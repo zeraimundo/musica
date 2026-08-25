@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07152f">
+  <meta name="description" content="Portal de slides da disciplina de Informática Básica do Curso Subsequente de Música do IFPB.">
+  <meta property="og:title" content="Informática Básica — Música">
+  <meta property="og:description" content="Acesse os slides e materiais interativos usados durante o período.">
+  <meta property="og:image" content="assets/portal-cover.png">
+  <title>Informática Básica — Música | Portal de Aulas</title>
+  <style>
+    :root{--bg:#050b19;--bg2:#081731;--surface:#0c1d3d;--surface2:#10264d;--text:#f7fbff;--muted:#b7c8e0;--blue:#4285f4;--cyan:#22d3ee;--violet:#8b5cf6;--green:#34a853;--yellow:#fbbc04;--line:rgba(255,255,255,.13);--shadow:0 24px 70px rgba(0,0,0,.38);--radius:22px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 12% 8%,rgba(34,211,238,.12),transparent 28%),radial-gradient(circle at 86% 25%,rgba(139,92,246,.14),transparent 30%),linear-gradient(145deg,var(--bg),var(--bg2));color:var(--text);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.23;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+    a{color:inherit}button,input{font:inherit}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(5,11,25,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1180px;margin:auto;height:68px;padding:0 22px;display:flex;align-items:center;gap:18px}
+    .logo{display:flex;align-items:center;gap:11px;text-decoration:none}.logo-mark{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:1.25rem;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 10px 28px rgba(66,133,244,.28)}
+    .logo strong{display:block;font-size:.92rem}.logo small{display:block;color:var(--muted);font-size:.68rem;margin-top:2px}.top-spacer{flex:1}
+    .top-link{color:#dbeafe;text-decoration:none;font-size:.78rem;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05)}.top-link:hover{background:rgba(255,255,255,.1)}
+    .hero{max-width:1180px;margin:28px auto 0;padding:0 22px}
+    .hero-panel{position:relative;min-height:470px;border-radius:32px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:linear-gradient(90deg,rgba(3,9,24,.98) 0%,rgba(3,9,24,.87) 42%,rgba(3,9,24,.18) 75%),url("assets/portal-cover.png") center/cover no-repeat}
+    .hero-panel:after{content:"";position:absolute;inset:auto 0 0;height:42%;background:linear-gradient(to top,rgba(3,9,24,.78),transparent);pointer-events:none}
+    .hero-copy{position:relative;z-index:2;max-width:650px;padding:58px 54px}
+    .eyebrow{display:flex;align-items:center;gap:9px;color:#8beeff;text-transform:uppercase;letter-spacing:.15em;font-weight:800;font-size:.72rem;margin-bottom:15px}.eyebrow:before{content:"";width:30px;height:3px;border-radius:9px;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(3rem,7vw,6.2rem);line-height:.92;letter-spacing:-.058em;margin-bottom:18px}h2{font-size:clamp(2rem,4.5vw,4rem);line-height:1;letter-spacing:-.045em;margin-bottom:16px}h3{font-size:1.18rem;letter-spacing:-.02em;margin-bottom:9px}
+    .gradient{background:linear-gradient(105deg,#fff 8%,#91ecff 48%,#bca9ff 90%);background-clip:text;-webkit-background-clip:text;color:transparent}.lead{font-size:clamp(1rem,1.8vw,1.28rem);line-height:1.65;color:var(--muted);max-width:610px}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0}.tag{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:.73rem;color:#dbeafe}.tag.available{border-color:rgba(52,168,83,.45);background:rgba(52,168,83,.13);color:#c5f5cf}
+    .primary-btn{display:inline-flex;align-items:center;gap:9px;text-decoration:none;border:0;border-radius:13px;padding:13px 17px;background:linear-gradient(135deg,var(--blue),var(--violet));font-weight:800;box-shadow:0 13px 30px rgba(66,133,244,.28);transition:.2s}.primary-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+    .hero-stats{position:absolute;z-index:3;right:24px;bottom:23px;display:flex;gap:10px}.hero-stat{padding:12px 15px;border:1px solid var(--line);border-radius:14px;background:rgba(5,11,25,.73);backdrop-filter:blur(12px)}.hero-stat strong{display:block;font-size:1.1rem}.hero-stat small{color:var(--muted);font-size:.65rem}
+    main{max-width:1180px;margin:auto;padding:52px 22px 80px}.section-head{display:flex;gap:20px;align-items:end;margin-bottom:24px}.section-head>div:first-child{flex:1}.section-head p{color:var(--muted);margin:0;line-height:1.55}
+    .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 26px}.search-wrap{position:relative;flex:1;min-width:240px}.search-wrap span:first-child{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.7}
+    #search{width:100%;height:46px;padding:0 14px 0 40px;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:13px;outline:none}#search:focus{border-color:#6ab4ff;box-shadow:0 0 0 4px rgba(66,133,244,.12)}
+    .filters{display:flex;gap:7px}.filter{height:42px;padding:0 13px;border-radius:11px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.05);cursor:pointer}.filter.active{color:#fff;background:rgba(66,133,244,.22);border-color:#69abff}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .class-card{position:relative;min-height:360px;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));padding:21px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 45px rgba(0,0,0,.16);transition:.22s}
+    .class-card:hover{transform:translateY(-4px);border-color:rgba(119,189,255,.48);box-shadow:0 24px 55px rgba(0,0,0,.25)}.class-card.current{border-color:rgba(34,211,238,.55);background:linear-gradient(145deg,rgba(34,211,238,.13),rgba(139,92,246,.08))}.class-card.upcoming{opacity:.72}.class-card.upcoming:hover{transform:none}
+    .card-top{display:flex;justify-content:space-between;align-items:start;gap:10px}.lesson-icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;background:linear-gradient(135deg,rgba(66,133,244,.32),rgba(139,92,246,.28));border:1px solid rgba(255,255,255,.15)}
+    .number{color:#8beeff;font-size:.7rem;font-weight:900;letter-spacing:.12em}.card-date{font-size:.69rem;color:var(--muted);margin-top:4px;text-align:right}.class-card h3{font-size:1.32rem;line-height:1.15;margin:20px 0 11px}.description{color:var(--muted);font-size:.82rem;line-height:1.58}
+    .topics{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 18px}.topics span{font-size:.65rem;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#d4e3f7}
+    .card-bottom{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:15px;border-top:1px solid var(--line)}.slides-count{font-size:.7rem;color:var(--muted);flex:1}.open-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 11px;border-radius:10px;background:#e9f3ff;color:#05244a;text-decoration:none;font-size:.72rem;font-weight:900}.open-btn:hover{background:white}.locked{font-size:.72rem;color:#d9c478}
+    .ribbon{position:absolute;right:-39px;top:18px;transform:rotate(38deg);padding:6px 42px;background:linear-gradient(90deg,var(--cyan),var(--violet));font-size:.6rem;font-weight:900;letter-spacing:.08em}
+    .empty{display:none;text-align:center;padding:42px;border:1px dashed var(--line);border-radius:20px;color:var(--muted)}
+    .how-it-works{margin-top:52px;padding:26px;border:1px solid var(--line);border-radius:25px;background:rgba(255,255,255,.045)}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.step{display:grid;grid-template-columns:42px 1fr;gap:11px;padding:15px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid var(--line)}.step b:first-child{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--violet))}.step p{font-size:.73rem;line-height:1.5;color:var(--muted);margin:3px 0 0}
+    footer{border-top:1px solid var(--line);background:rgba(3,8,19,.55)}.footer-inner{max-width:1180px;margin:auto;padding:26px 22px;display:flex;gap:18px;align-items:center;color:var(--muted);font-size:.74rem}.footer-inner strong{color:var(--text)}.footer-inner span:last-child{margin-left:auto;text-align:right}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-panel{min-height:430px;background-position:65% center}.hero-copy{padding:46px 35px;max-width:570px}.steps{grid-template-columns:1fr}.hero-stats{display:none}}
+    @media(max-width:640px){.topbar-inner{height:60px;padding:0 14px}.logo small,.top-link{display:none}.hero{padding:0 12px;margin-top:14px}.hero-panel{min-height:520px;background-position:71% center;background-image:linear-gradient(90deg,rgba(3,9,24,.98),rgba(3,9,24,.78)),url("assets/portal-cover.png")}.hero-copy{padding:40px 23px}.grid{grid-template-columns:1fr}.section-head{display:block}.filters{width:100%;overflow:auto}.filter{flex:none}main{padding:40px 14px 60px}.footer-inner{display:block}.footer-inner span:last-child{display:block;margin:8px 0 0;text-align:left}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-inner"><a class="logo" href="#inicio"><span class="logo-mark">♫</span><span><strong>Mundo Digital</strong><small>Informática Básica • Música</small></span></a><span class="top-spacer"></span><a class="top-link" href="#aulas">Aulas</a><a class="top-link" href="#como-usar">Como usar</a></div></header>
+  <section class="hero" id="inicio">
+    <div class="hero-panel">
+      <div class="hero-copy">
+        <div class="eyebrow">IFPB • Curso Subsequente de Música</div>
+        <h1 class="gradient">Mundo<br>Digital</h1>
+        <p class="lead">Todos os slides de Informática Básica reunidos em um só lugar, organizados por aula e sempre disponíveis para revisão.</p>
+        <div class="hero-meta"><span class="tag available" id="publishedBadge">3 aulas disponíveis</span><span class="tag">⌁ Slides interativos</span><span class="tag">⌨ Computador e celular</span></div>
+        <a class="primary-btn" id="currentClassButton" href="#aulas">Abrir aula atual <span>→</span></a>
+      </div>
+      <div class="hero-stats"><div class="hero-stat"><strong id="totalSlides">86</strong><small>slides publicados</small></div><div class="hero-stat"><strong>Semanal</strong><small>novos conteúdos</small></div></div>
+    </div>
+  </section>
+  <main>
+    <section id="aulas">
+      <div class="section-head"><div><div class="eyebrow">Conteúdo do período</div><h2 class="gradient">Aulas publicadas</h2></div><p>Escolha uma aula para abrir a apresentação em tela cheia. Os novos materiais serão adicionados aqui semanalmente.</p></div>
+      <div class="tools">
+        <label class="search-wrap"><span aria-hidden="true">⌕</span><span class="sr-only">Pesquisar aulas</span><input id="search" type="search" placeholder="Pesquisar por aula ou assunto..." autocomplete="off"></label>
+        <div class="filters" aria-label="Filtros de aulas"><button class="filter active" data-filter="all">Todas</button><button class="filter" data-filter="available">Disponíveis</button><button class="filter" data-filter="upcoming">Próximas</button></div>
+      </div>
+      <div class="grid" id="classesGrid"></div><div class="empty" id="emptyState">Nenhuma aula encontrada com esse termo.</div>
+    </section>
+    <section class="how-it-works" id="como-usar">
+      <div class="eyebrow">Acesso simples</div><h2 style="font-size:clamp(1.7rem,3vw,2.6rem)">Como usar o portal</h2>
+      <div class="steps"><div class="step"><b>1</b><div><strong>Escolha a aula</strong><p>Use a pesquisa, os filtros ou clique diretamente em um cartão.</p></div></div><div class="step"><b>2</b><div><strong>Abra a apresentação</strong><p>O slide funciona no navegador, sem precisar instalar programas.</p></div></div><div class="step"><b>3</b><div><strong>Estude no seu ritmo</strong><p>Use as setas, os botões interativos, as atividades e o quiz para revisar.</p></div></div></div>
+    </section>
+  </main>
+  <footer><div class="footer-inner"><span><strong>Informática Básica</strong> • Curso Subsequente de Música</span><span id="footerInfo">Prof. Raimundo Carvalho • Atualizado em 25 de agosto de 2026</span></div></footer>
+  <script src="aulas.js"></script>
+  <script>
+    (function(){
+      "use strict";
+      var config=window.PORTAL_CONFIG||{},classes=Array.isArray(window.AULAS)?window.AULAS:[],grid=document.getElementById("classesGrid"),search=document.getElementById("search"),empty=document.getElementById("emptyState"),activeFilter="all";
+      function escapeHtml(value){return String(value).replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[ch]})}
+      function cardTemplate(item){
+        var statusClass=item.status==="current"?" current":item.status==="upcoming"?" upcoming":"",ribbon=item.status==="current"?'<span class="ribbon">AULA ATUAL</span>':"",topics=(item.topics||[]).map(function(t){return"<span>"+escapeHtml(t)+"</span>"}).join("");
+        var action=item.href?'<a class="open-btn" href="'+encodeURI(item.href)+'" target="_blank" rel="noopener">Abrir slides <span>↗</span></a>':'<span class="locked">◷ Em preparação</span>',count=item.slideCount?item.slideCount+" slides":"Conteúdo futuro";
+        return '<article class="class-card'+statusClass+'" data-status="'+escapeHtml(item.status)+'">'+ribbon+'<div class="card-top"><div class="lesson-icon" aria-hidden="true">'+escapeHtml(item.icon||"▤")+'</div><div><div class="number">AULA '+String(item.number).padStart(2,"0")+'</div><div class="card-date">'+escapeHtml(item.date)+'</div></div></div><h3>'+escapeHtml(item.title)+'</h3><p class="description">'+escapeHtml(item.description)+'</p><div class="topics">'+topics+'</div><div class="card-bottom"><span class="slides-count">'+escapeHtml(count)+'</span>'+action+'</div></article>';
+      }
+      function render(){
+        var query=search.value.trim().toLowerCase(),visible=classes.filter(function(item){var filterOk=activeFilter==="all"||(activeFilter==="available"&&item.status!=="upcoming")||(activeFilter==="upcoming"&&item.status==="upcoming"),haystack=(item.title+" "+item.description+" "+(item.topics||[]).join(" ")).toLowerCase();return filterOk&&(!query||haystack.indexOf(query)!==-1)});
+        grid.innerHTML=visible.map(cardTemplate).join("");empty.style.display=visible.length?"none":"block";
+      }
+      document.querySelectorAll(".filter").forEach(function(button){button.addEventListener("click",function(){document.querySelectorAll(".filter").forEach(function(b){b.classList.remove("active")});button.classList.add("active");activeFilter=button.dataset.filter;render()})});
+      search.addEventListener("input",render);
+      var published=classes.filter(function(x){return x.status!=="upcoming"}),slideTotal=published.reduce(function(sum,x){return sum+(x.slideCount||0)},0);
+      document.getElementById("publishedBadge").textContent=published.length+" aulas disponíveis";document.getElementById("totalSlides").textContent=slideTotal;document.getElementById("footerInfo").textContent=(config.professor||"Prof. Raimundo Carvalho")+" • Atualizado em "+(config.updatedAt||"2026");
+      var current=classes.find(function(x){return x.id===config.currentId})||published[published.length-1];if(current&&current.href){var button=document.getElementById("currentClassButton");button.href=current.href;button.target="_blank";button.rel="noopener"}render();
+    })();
+  </script>
+</body>
+</html>

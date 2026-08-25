@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#071525">
+  <title>História da Informática, Hardware e Software — Aula Interativa</title>
+  <style>
+    :root {
+      --bg: #071525;
+      --bg-2: #0b2037;
+      --panel: rgba(10, 30, 51, .82);
+      --panel-strong: rgba(7, 23, 40, .96);
+      --line: rgba(148, 220, 255, .2);
+      --text: #f5fbff;
+      --muted: #b8cada;
+      --cyan: #37d7ff;
+      --cyan-soft: #9bedff;
+      --violet: #9b7bff;
+      --pink: #ff6fbd;
+      --amber: #ffc85a;
+      --green: #51e6a3;
+      --red: #ff7080;
+      --radius: 22px;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      overflow: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(55, 215, 255, .13), transparent 29%),
+        radial-gradient(circle at 83% 72%, rgba(155, 123, 255, .12), transparent 32%),
+        linear-gradient(135deg, var(--bg), #050d18 72%);
+      font-family: "Segoe UI", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--cyan-soft); }
+
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 54px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 22px;
+      background: rgba(4, 14, 25, .78);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: .02em;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      border-radius: 10px;
+      color: #04111d;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      box-shadow: 0 0 24px rgba(55, 215, 255, .28);
+    }
+
+    .brand span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .top-progress {
+      height: 5px;
+      flex: 1;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .09);
+    }
+
+    .top-progress > div {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), var(--pink));
+      transition: width .35s ease;
+    }
+
+    .slide-count {
+      min-width: 55px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .055);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .icon-btn:hover, .icon-btn:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(55, 215, 255, .58);
+      background: rgba(55, 215, 255, .12);
+      outline: none;
+    }
+
+    #stage {
+      position: fixed;
+      inset: 54px 0 65px;
+      z-index: 5;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      visibility: hidden;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden auto;
+      padding: clamp(26px, 4vw, 68px) clamp(28px, 5.2vw, 90px);
+      opacity: 0;
+      transform: translateX(3%);
+      transition: opacity .38s ease, transform .38s ease, visibility 0s linear .38s;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(55,215,255,.35) transparent;
+    }
+
+    .slide.active {
+      visibility: visible;
+      z-index: 2;
+      opacity: 1;
+      transform: translateX(0);
+      transition-delay: 0s;
+    }
+
+    .slide.leaving-left { transform: translateX(-3%); }
+    .slide > * { position: relative; z-index: 1; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      width: min(46vw, 620px);
+      aspect-ratio: 1;
+      right: -14%;
+      top: -27%;
+      border: 1px solid rgba(55, 215, 255, .1);
+      border-radius: 50%;
+      box-shadow: 0 0 0 70px rgba(155, 123, 255, .025), 0 0 0 140px rgba(55, 215, 255, .018);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--cyan-soft);
+      font-size: clamp(12px, 1.15vw, 17px);
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 3px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 900px;
+      margin-bottom: 18px;
+      font-size: clamp(45px, 6.2vw, 92px);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    h2 {
+      max-width: 1180px;
+      margin-bottom: clamp(18px, 2.3vw, 34px);
+      font-size: clamp(34px, 4.1vw, 62px);
+      line-height: 1.04;
+      letter-spacing: -.035em;
+    }
+
+    h3 {
+      margin-bottom: 9px;
+      font-size: clamp(20px, 1.8vw, 29px);
+      line-height: 1.13;
+    }
+
+    p, li {
+      color: var(--muted);
+      font-size: clamp(16px, 1.38vw, 22px);
+      line-height: 1.46;
+    }
+
+    .lead {
+      max-width: 920px;
+      color: #d9eaf5;
+      font-size: clamp(19px, 1.65vw, 27px);
+    }
+
+    .accent { color: var(--cyan); }
+    .violet { color: #beaaff; }
+    .pink { color: #ff9bd1; }
+    .amber { color: var(--amber); }
+    .green { color: var(--green); }
+    .muted { color: var(--muted); }
+    .small { font-size: clamp(12px, 1vw, 15px); }
+
+    .hero-grid,
+    .two-col,
+    .history-grid,
+    .system-grid,
+    .music-grid {
+      display: grid;
+      align-items: center;
+      gap: clamp(24px, 3.5vw, 58px);
+    }
+
+    .hero-grid { grid-template-columns: 1.18fr .82fr; }
+    .two-col { grid-template-columns: 1fr 1fr; }
+    .history-grid { grid-template-columns: .92fr 1.08fr; }
+    .system-grid { grid-template-columns: repeat(4, 1fr); align-items: stretch; gap: 16px; }
+    .music-grid { grid-template-columns: repeat(5, 1fr); align-items: stretch; gap: 13px; }
+
+    .hero-subtitle {
+      max-width: 760px;
+      margin: 0 0 26px;
+      color: #d6e9f5;
+      font-size: clamp(19px, 1.7vw, 27px);
+    }
+
+    .meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #d9ebf7;
+      background: rgba(255,255,255,.045);
+      font-size: clamp(12px, 1vw, 15px);
+    }
+
+    .hero-visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: min(52vh, 470px);
+    }
+
+    .computer {
+      position: relative;
+      width: min(38vw, 500px);
+      aspect-ratio: 1.35;
+      padding: 20px;
+      border: 2px solid rgba(163, 231, 255, .34);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(22, 63, 96, .94), rgba(6, 20, 35, .96));
+      box-shadow: var(--shadow), inset 0 0 32px rgba(55, 215, 255, .05);
+    }
+
+    .screen {
+      position: relative;
+      height: 79%;
+      overflow: hidden;
+      border: 2px solid rgba(55, 215, 255, .35);
+      border-radius: 16px;
+      background:
+        linear-gradient(rgba(55,215,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(55,215,255,.035) 1px, transparent 1px),
+        #07111d;
+      background-size: 22px 22px;
+    }
+
+    .screen::after {
+      content: "HISTÓRIA  •  HARDWARE  •  SOFTWARE";
+      position: absolute;
+      left: 50%;
+      bottom: 12%;
+      width: 100%;
+      transform: translateX(-50%);
+      color: var(--cyan-soft);
+      font-size: clamp(8px, .85vw, 13px);
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-align: center;
+    }
+
+    .waveform {
+      position: absolute;
+      inset: 21% 8% auto;
+      height: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3.2%;
+    }
+
+    .waveform i {
+      width: 4.5%;
+      min-width: 6px;
+      height: var(--h);
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--pink), var(--violet), var(--cyan));
+      box-shadow: 0 0 12px rgba(55, 215, 255, .25);
+      animation: sound 1.25s ease-in-out infinite alternate;
+      animation-delay: var(--d);
+    }
+
+    .computer-base {
+      position: absolute;
+      left: 29%;
+      right: 29%;
+      bottom: -10%;
+      height: 11%;
+      border-radius: 0 0 14px 14px;
+      background: linear-gradient(180deg, #2c5270, #112b40);
+    }
+
+    .floating-note {
+      position: absolute;
+      color: var(--cyan-soft);
+      font-size: clamp(25px, 3vw, 48px);
+      opacity: .75;
+      filter: drop-shadow(0 0 15px rgba(55,215,255,.35));
+      animation: floaty 4.5s ease-in-out infinite;
+    }
+    .note-a { right: 4%; top: 4%; }
+    .note-b { left: 2%; bottom: 9%; animation-delay: -2.2s; color: #c7b9ff; }
+
+    @keyframes sound { from { transform: scaleY(.74); } to { transform: scaleY(1.08); } }
+    @keyframes floaty { 50% { transform: translateY(-10px) rotate(5deg); } }
+
+    .card,
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(18, 49, 78, .75), rgba(8, 25, 43, .8));
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .18);
+      backdrop-filter: blur(12px);
+    }
+
+    .card { padding: clamp(18px, 2vw, 30px); }
+    .glass { padding: clamp(16px, 1.7vw, 25px); }
+    .card p:last-child, .glass p:last-child { margin-bottom: 0; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(13px, 1.7vw, 24px);
+    }
+
+    .card-grid.four { grid-template-columns: repeat(4, 1fr); }
+    .card-grid.two { grid-template-columns: repeat(2, 1fr); }
+
+    .icon-circle {
+      display: grid;
+      place-items: center;
+      width: clamp(46px, 4.3vw, 66px);
+      aspect-ratio: 1;
+      margin-bottom: 14px;
+      border: 1px solid rgba(55, 215, 255, .28);
+      border-radius: 18px;
+      background: rgba(55, 215, 255, .08);
+      font-size: clamp(25px, 2.3vw, 38px);
+    }
+
+    .prompt {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--amber);
+      border-radius: 0 16px 16px 0;
+      color: #fff5d9;
+      background: rgba(255, 200, 90, .09);
+      font-size: clamp(16px, 1.2vw, 19px);
+      line-height: 1.4;
+    }
+
+    .prompt strong { color: var(--amber); }
+
+    .toggle-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .toggle-card {
+      min-height: 118px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255,255,255,.045);
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .toggle-card:hover, .toggle-card:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(55,215,255,.5);
+      outline: none;
+    }
+    .toggle-card.found { border-color: rgba(81,230,163,.65); background: rgba(81,230,163,.11); }
+    .toggle-card .check { float: right; opacity: 0; color: var(--green); }
+    .toggle-card.found .check { opacity: 1; }
+    .toggle-card strong { display: block; margin-bottom: 6px; font-size: clamp(17px, 1.3vw, 21px); }
+    .toggle-card span:last-child { color: var(--muted); font-size: clamp(13px, 1vw, 16px); }
+
+    .definition {
+      max-width: 1050px;
+      margin: 0 auto 26px;
+      padding: clamp(24px, 3vw, 42px);
+      border: 1px solid rgba(55,215,255,.28);
+      border-radius: 28px;
+      color: #f4fbff;
+      background: linear-gradient(135deg, rgba(55,215,255,.105), rgba(155,123,255,.08));
+      font-size: clamp(23px, 2.5vw, 38px);
+      font-weight: 650;
+      line-height: 1.3;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .concept-tabs, .generation-tabs, .scenario-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .pill-btn {
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .pill-btn:hover, .pill-btn:focus-visible, .pill-btn.active {
+      border-color: rgba(55,215,255,.62);
+      background: rgba(55,215,255,.13);
+      outline: none;
+    }
+
+    .concept-output {
+      min-height: 82px;
+      max-width: 900px;
+      margin: 18px auto 0;
+      color: #dcedf6;
+      text-align: center;
+      font-size: clamp(17px, 1.35vw, 22px);
+    }
+
+    .timeline-shell {
+      display: grid;
+      grid-template-columns: minmax(235px, .7fr) 1.3fr;
+      gap: clamp(20px, 3vw, 45px);
+      align-items: stretch;
+    }
+
+    .timeline-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .time-btn {
+      min-height: 66px;
+      padding: 10px 8px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      color: var(--muted);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .time-btn strong { display: block; color: var(--text); font-size: 16px; }
+    .time-btn:hover, .time-btn:focus-visible, .time-btn.active {
+      transform: translateY(-2px);
+      border-color: rgba(255,200,90,.55);
+      color: #fff0c5;
+      background: rgba(255,200,90,.1);
+      outline: none;
+    }
+
+    .timeline-detail {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 320px;
+      overflow: hidden;
+      padding: clamp(25px, 3vw, 44px);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(22,64,96,.72), rgba(8,23,40,.9));
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-year {
+      margin-bottom: 9px;
+      color: var(--amber);
+      font-size: clamp(34px, 5vw, 72px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+    .timeline-detail h3 { font-size: clamp(24px, 2.4vw, 37px); }
+    .timeline-detail p { max-width: 720px; }
+
+    .media-frame {
+      position: relative;
+      min-height: 300px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(55,215,255,.08), rgba(155,123,255,.08));
+      box-shadow: var(--shadow);
+    }
+
+    .media-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .media-frame.portrait img { object-position: 50% 22%; }
+    .media-frame.contain img { object-fit: contain; padding: 16px; background: rgba(245,248,250,.94); }
+    .media-frame.failed::after {
+      content: "Imagem histórica indisponível — o conteúdo da aula continua normalmente.";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .media-caption {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 9px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      color: #e7f4fb;
+      background: rgba(2,11,20,.78);
+      font-size: 11px;
+      line-height: 1.25;
+      backdrop-filter: blur(8px);
+    }
+
+    .stack { display: grid; gap: 13px; }
+    .fact-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.035);
+    }
+    .fact-row b { color: var(--cyan-soft); font-size: clamp(17px,1.35vw,22px); }
+    .fact-row span { color: var(--muted); font-size: clamp(14px,1.05vw,17px); }
+
+    .punch-card {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 5px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #e7d9b1;
+      box-shadow: var(--shadow);
+    }
+
+    .punch-hole {
+      aspect-ratio: .62;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(71,53,20,.12);
+      cursor: pointer;
+      transition: .13s ease;
+    }
+    .punch-hole.on { background: #081522; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .punch-hole:hover, .punch-hole:focus-visible { outline: 2px solid var(--pink); outline-offset: 1px; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .metric {
+      padding: 16px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      text-align: center;
+      background: rgba(255,255,255,.045);
+    }
+    .metric strong { display: block; color: var(--cyan); font-size: clamp(23px,2.4vw,37px); }
+    .metric span { color: var(--muted); font-size: clamp(12px,.95vw,15px); }
+
+    .generation-display {
+      min-height: 260px;
+      margin-top: 22px;
+      padding: clamp(22px, 2.5vw, 36px);
+      border: 1px solid var(--line);
+      border-radius: 25px;
+      background: linear-gradient(135deg, rgba(55,215,255,.08), rgba(155,123,255,.07));
+    }
+    .generation-display .big-icon { float: right; margin-left: 22px; font-size: clamp(55px,7vw,105px); }
+    .generation-display h3 { font-size: clamp(25px,2.5vw,39px); }
+    .generation-display .tag { color: var(--amber); font-weight: 800; }
+
+    .compare-media {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .compare-media .media-frame { min-height: 235px; }
+    .compare-media .media-frame img { min-height: 235px; }
+
+    .connection-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .connection-node {
+      min-height: 210px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: center;
+      background: rgba(255,255,255,.045);
+    }
+    .connection-node .big { display: block; margin-bottom: 12px; font-size: clamp(43px,5vw,72px); }
+    .arrow { color: var(--cyan); font-size: clamp(28px,3.5vw,48px); }
+
+    .flow-card {
+      position: relative;
+      min-height: 235px;
+      padding: 20px 17px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: center;
+      background: rgba(255,255,255,.042);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .flow-card:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      z-index: 3;
+      right: -21px;
+      top: 43%;
+      color: var(--cyan);
+      font-size: 27px;
+    }
+    .flow-card:hover, .flow-card:focus-visible, .flow-card.active {
+      transform: translateY(-4px);
+      border-color: rgba(55,215,255,.55);
+      background: rgba(55,215,255,.1);
+      outline: none;
+    }
+    .flow-card .flow-icon { display: block; margin: 8px 0 14px; font-size: clamp(38px,4vw,61px); }
+    .flow-card p { font-size: clamp(13px,1vw,16px); }
+    .flow-example {
+      min-height: 58px;
+      margin-top: 16px;
+      color: #eaf8ff;
+      text-align: center;
+      font-size: clamp(17px,1.35vw,21px);
+    }
+
+    .hardware-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+    }
+    .hardware-card {
+      position: relative;
+      min-height: 190px;
+      padding: 19px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      background: rgba(255,255,255,.043);
+    }
+    .hardware-card::after {
+      content: attr(data-label);
+      position: absolute;
+      right: -2px;
+      bottom: -12px;
+      color: rgba(255,255,255,.032);
+      font-size: 56px;
+      font-weight: 900;
+    }
+    .hardware-card .h-icon { font-size: 38px; }
+    .hardware-card p { font-size: clamp(13px,1vw,16px); }
+
+    .explorer {
+      display: grid;
+      grid-template-columns: .7fr 1.3fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .component-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .component-btn {
+      min-height: 67px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      text-align: left;
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .component-btn:hover, .component-btn:focus-visible, .component-btn.active {
+      border-color: rgba(55,215,255,.58);
+      background: rgba(55,215,255,.105);
+      outline: none;
+    }
+    .component-btn b { display: block; color: var(--text); }
+    .component-btn small { color: var(--muted); }
+    .component-detail {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 22px;
+      align-items: center;
+      min-height: 300px;
+      padding: clamp(23px,2.6vw,38px);
+      border: 1px solid var(--line);
+      border-radius: 25px;
+      background: linear-gradient(135deg, rgba(55,215,255,.09), rgba(155,123,255,.08));
+    }
+    .component-detail .component-icon { font-size: clamp(68px,8vw,118px); }
+    .component-detail h3 { font-size: clamp(28px,3vw,43px); }
+    .detail-lines { display: grid; gap: 9px; }
+    .detail-lines span { color: var(--muted); font-size: clamp(14px,1.1vw,18px); }
+    .detail-lines b { color: var(--cyan-soft); }
+
+    .classify-shell { display: grid; grid-template-columns: .73fr 1.27fr; gap: 20px; }
+    .draggables { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; align-content: start; }
+    .drag-item {
+      padding: 12px 10px;
+      border: 1px solid rgba(255,200,90,.28);
+      border-radius: 14px;
+      background: rgba(255,200,90,.07);
+      cursor: grab;
+      text-align: center;
+      user-select: none;
+    }
+    .drag-item.selected { outline: 3px solid var(--amber); outline-offset: 2px; }
+    .drag-item.placed { opacity: .25; pointer-events: none; }
+    .drop-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .drop-zone {
+      min-height: 118px;
+      padding: 13px;
+      border: 2px dashed rgba(55,215,255,.25);
+      border-radius: 17px;
+      background: rgba(55,215,255,.035);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .drop-zone:hover, .drop-zone:focus-visible, .drop-zone.dragover {
+      border-color: var(--cyan);
+      background: rgba(55,215,255,.09);
+      outline: none;
+    }
+    .drop-zone b { display: block; margin-bottom: 6px; color: var(--cyan-soft); }
+    .drop-zone .placed-labels { color: var(--muted); font-size: 13px; }
+    .game-status { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; color: var(--muted); }
+
+    .software-stack {
+      display: grid;
+      gap: 10px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .software-layer {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 18px;
+      align-items: center;
+      min-height: 82px;
+      padding: 15px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .software-layer:hover, .software-layer:focus-visible, .software-layer.active {
+      transform: translateX(5px);
+      border-color: rgba(155,123,255,.7);
+      background: rgba(155,123,255,.11);
+      outline: none;
+    }
+    .software-layer b { color: #d6cbff; font-size: clamp(16px,1.25vw,20px); }
+    .software-layer span { color: var(--muted); font-size: clamp(14px,1.05vw,17px); }
+    .software-output { min-height: 60px; margin-top: 14px; text-align: center; color: #e9e3ff; }
+
+    .flip-card {
+      min-height: 215px;
+      padding: 0;
+      border: 0;
+      border-radius: 20px;
+      perspective: 800px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 215px;
+      transition: transform .5s ease;
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      backface-visibility: hidden;
+      background: linear-gradient(145deg, rgba(18,49,78,.9), rgba(8,25,43,.96));
+    }
+    .flip-back { transform: rotateY(180deg); background: linear-gradient(145deg, rgba(78,55,135,.85), rgba(18,32,63,.96)); }
+    .flip-face .big { font-size: 38px; }
+    .flip-face p { font-size: clamp(13px,1vw,16px); }
+
+    .analogy-table {
+      display: grid;
+      grid-template-columns: .8fr .9fr 1.1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.035);
+    }
+    .analogy-table > div { padding: clamp(13px,1.5vw,21px); border-bottom: 1px solid var(--line); }
+    .analogy-table > div:nth-last-child(-n+3) { border-bottom: 0; }
+    .analogy-table .head { color: var(--cyan-soft); background: rgba(55,215,255,.08); font-weight: 800; }
+    .analogy-table .cell { color: var(--muted); font-size: clamp(14px,1.1vw,18px); }
+    .analogy-table .cell b { color: var(--text); }
+
+    .music-node {
+      position: relative;
+      min-height: 225px;
+      padding: 18px 12px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      text-align: center;
+      background: rgba(255,255,255,.042);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .music-node:not(:last-child)::after {
+      content: "›";
+      position: absolute;
+      right: -14px;
+      top: 40%;
+      z-index: 3;
+      color: var(--pink);
+      font-size: 34px;
+    }
+    .music-node:hover, .music-node:focus-visible, .music-node.active {
+      transform: translateY(-4px);
+      border-color: rgba(255,111,189,.62);
+      background: rgba(255,111,189,.09);
+      outline: none;
+    }
+    .music-node .big { display: block; margin-bottom: 11px; font-size: clamp(38px,4vw,61px); }
+    .music-node p { font-size: clamp(12px,.92vw,15px); }
+    .music-output { min-height: 60px; margin-top: 15px; color: #ffe1f1; text-align: center; }
+
+    .scenario-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 1040px;
+      margin: 22px auto 0;
+    }
+    .scenario-side {
+      min-height: 220px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.04);
+    }
+    .scenario-side .big { font-size: 46px; }
+    .scenario-side ul { margin: 12px 0 0; padding-left: 21px; }
+
+    .quick-checks { display: grid; gap: 12px; }
+    .quick-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 15px 17px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(255,255,255,.038);
+    }
+    .quick-row p { margin: 0; color: #deedf6; }
+    .quick-actions { display: flex; gap: 7px; }
+    .quick-actions button {
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+    }
+    .quick-actions button:hover, .quick-actions button:focus-visible { border-color: var(--cyan); outline: none; }
+    .quick-result { grid-column: 1 / -1; display: none; color: var(--muted); font-size: 14px; }
+    .quick-row.answered .quick-result { display: block; }
+    .quick-row.correct { border-color: rgba(81,230,163,.5); }
+    .quick-row.wrong { border-color: rgba(255,112,128,.5); }
+
+    .quiz-shell {
+      max-width: 1060px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .quiz-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 15px;
+      color: var(--muted);
+    }
+    .quiz-mini-progress { flex: 1; height: 8px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.08); }
+    .quiz-mini-progress div { height: 100%; background: linear-gradient(90deg,var(--cyan),var(--violet)); transition: width .3s; }
+    .quiz-card {
+      min-height: 465px;
+      padding: clamp(24px,3vw,43px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(18,49,78,.86), rgba(7,22,39,.94));
+      box-shadow: var(--shadow);
+    }
+    .quiz-card h3 { margin-bottom: 24px; font-size: clamp(23px,2.45vw,37px); }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .quiz-option {
+      min-height: 67px;
+      padding: 14px 17px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      text-align: left;
+      background: rgba(255,255,255,.045);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .quiz-option:hover, .quiz-option:focus-visible { transform: translateY(-2px); border-color: rgba(55,215,255,.55); outline: none; }
+    .quiz-option.correct { border-color: var(--green); background: rgba(81,230,163,.13); }
+    .quiz-option.wrong { border-color: var(--red); background: rgba(255,112,128,.13); }
+    .quiz-option:disabled { cursor: default; }
+    .quiz-feedback { min-height: 72px; margin-top: 17px; padding: 12px 15px; border-radius: 14px; color: var(--muted); background: rgba(0,0,0,.12); }
+    .quiz-feedback.good { color: #d8ffec; background: rgba(81,230,163,.08); }
+    .quiz-feedback.bad { color: #ffe0e4; background: rgba(255,112,128,.08); }
+    .quiz-actions { display: flex; justify-content: flex-end; margin-top: 13px; }
+    .primary-btn, .secondary-btn {
+      padding: 11px 17px;
+      border-radius: 13px;
+      cursor: pointer;
+    }
+    .primary-btn { border: 0; color: #04111d; background: linear-gradient(135deg,var(--cyan),#83ebff); font-weight: 800; }
+    .secondary-btn { border: 1px solid var(--line); background: rgba(255,255,255,.05); }
+    .primary-btn:disabled { opacity: .35; cursor: default; }
+    .result-panel { display: grid; place-items: center; min-height: 390px; text-align: center; }
+    .result-score { color: var(--cyan); font-size: clamp(62px,9vw,122px); font-weight: 900; line-height: 1; }
+    .result-panel h3 { font-size: clamp(27px,3vw,44px); }
+
+    .outcomes {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .outcome {
+      min-height: 185px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      background: rgba(255,255,255,.04);
+    }
+    .outcome .big { font-size: 39px; }
+
+    .controls {
+      position: fixed;
+      inset: auto 0 0;
+      height: 65px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 0 22px;
+      border-top: 1px solid var(--line);
+      background: rgba(4, 14, 25, .82);
+      backdrop-filter: blur(18px);
+    }
+
+    .teacher {
+      min-width: 0;
+      color: var(--muted);
+      font-size: clamp(11px, .92vw, 14px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-group { display: flex; align-items: center; gap: 9px; }
+    .nav-btn {
+      min-width: 104px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255,255,255,.055);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .nav-btn.next { border: 0; color: #04111d; background: linear-gradient(135deg,var(--cyan),#92edff); font-weight: 850; }
+    .nav-btn:hover:not(:disabled), .nav-btn:focus-visible:not(:disabled) { transform: translateY(-2px); outline: none; }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    .key-hint { color: #7892a6; font-size: 12px; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 25px;
+      background: rgba(1,7,12,.82);
+      backdrop-filter: blur(16px);
+    }
+    .modal.open { display: grid; }
+    .modal-panel {
+      width: min(1100px, 95vw);
+      max-height: 86vh;
+      overflow: auto;
+      padding: clamp(22px,3vw,40px);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel-strong);
+      box-shadow: var(--shadow);
+    }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    .modal-head h2 { margin: 0; font-size: clamp(27px,3vw,43px); }
+    .overview-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 11px; }
+    .overview-item {
+      min-height: 92px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      text-align: left;
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .overview-item:hover, .overview-item:focus-visible, .overview-item.current { border-color: rgba(55,215,255,.65); background: rgba(55,215,255,.1); outline: none; }
+    .overview-item small { display: block; margin-bottom: 5px; color: var(--cyan-soft); }
+    .overview-item span { color: #dcecf5; font-size: 14px; line-height: 1.2; }
+    .sources-list { display: grid; gap: 13px; }
+    .source-item { padding: 14px 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.035); }
+    .source-item b { display: block; margin-bottom: 5px; }
+    .source-item p { margin: 0; font-size: 14px; }
+    .help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    kbd { display: inline-block; min-width: 32px; padding: 4px 7px; border: 1px solid rgba(255,255,255,.22); border-bottom-width: 3px; border-radius: 8px; color: #fff; background: rgba(255,255,255,.06); text-align: center; }
+
+    .toast {
+      position: fixed;
+      z-index: 120;
+      left: 50%;
+      bottom: 80px;
+      max-width: min(560px, 88vw);
+      padding: 11px 16px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(4,14,25,.94);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translate(-50%, 12px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+
+    @media (max-width: 980px) {
+      .slide { justify-content: flex-start; }
+      .hero-grid, .two-col, .history-grid, .timeline-shell, .explorer, .classify-shell { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .card-grid.four, .hardware-cards { grid-template-columns: repeat(2,1fr); }
+      .system-grid { grid-template-columns: repeat(2,1fr); }
+      .flow-card:not(:last-child)::after { display: none; }
+      .music-grid { grid-template-columns: repeat(5,minmax(145px,1fr)); overflow-x: auto; padding-bottom: 8px; }
+      .connection-line { grid-template-columns: 1fr; }
+      .connection-line .arrow { transform: rotate(90deg); text-align: center; }
+      .overview-grid { grid-template-columns: repeat(3,1fr); }
+      .compare-media { max-width: 780px; }
+    }
+
+    @media (max-width: 680px) {
+      .brand span:last-child, .key-hint, .teacher { display: none; }
+      .topbar, .controls { padding-left: 12px; padding-right: 12px; }
+      .slide { padding: 23px 20px 30px; }
+      .card-grid, .card-grid.two, .card-grid.four, .toggle-cards, .hardware-cards, .metrics, .quiz-options, .outcomes, .scenario-display { grid-template-columns: 1fr; }
+      .timeline-buttons { grid-template-columns: repeat(2,1fr); }
+      .system-grid { grid-template-columns: 1fr; }
+      .flow-card { min-height: auto; }
+      .component-list { grid-template-columns: 1fr 1fr; }
+      .component-detail { grid-template-columns: 1fr; text-align: center; }
+      .draggables, .drop-zones { grid-template-columns: 1fr; }
+      .software-layer { grid-template-columns: 1fr; gap: 4px; }
+      .analogy-table { grid-template-columns: .7fr 1fr; }
+      .analogy-table > div:nth-child(3n+3) { display: none; }
+      .analogy-table > div:nth-last-child(-n+3) { border-bottom: 1px solid var(--line); }
+      .quick-row { grid-template-columns: 1fr; }
+      .overview-grid, .help-grid { grid-template-columns: 1fr 1fr; }
+      .nav-btn { min-width: 48px; }
+      .nav-btn .nav-text { display: none; }
+      .quiz-card { min-height: 520px; }
+    }
+
+    @media (max-height: 820px) and (min-width: 800px) {
+      h2 { margin-bottom: 12px; font-size: clamp(31px, 3.45vw, 48px); }
+      h3 { margin-bottom: 6px; }
+      p, li { line-height: 1.34; }
+      .eyebrow { margin-bottom: 7px; }
+      .slide { justify-content: flex-start; padding-top: 18px; padding-bottom: 18px; }
+      .card, .glass { padding: 14px 17px; }
+      .prompt { margin-top: 13px; padding-top: 11px; padding-bottom: 11px; }
+      .media-frame, .media-frame img { min-height: 205px !important; }
+      .fact-row { padding: 10px 13px; }
+      .timeline-detail { min-height: 265px; }
+      .generation-display { min-height: 210px; margin-top: 13px; padding: 20px 25px; }
+      .flow-card, .music-node { min-height: 180px; }
+      .component-detail { min-height: 260px; padding: 20px 24px; }
+      .software-layer { min-height: 67px; padding: 11px 17px; }
+      .software-output, .music-output { min-height: 44px; margin-top: 8px; }
+      .scenario-side { min-height: 185px; padding: 18px 22px; }
+      .quiz-card { min-height: 385px; padding: 22px 28px; }
+      .quiz-card h3 { margin-bottom: 15px; }
+      .quiz-option { min-height: 56px; padding: 10px 14px; }
+      .quiz-feedback { min-height: 58px; margin-top: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">⌘</span><span>INFORMÁTICA BÁSICA · AULA INTERATIVA</span></div>
+    <div class="top-progress" aria-label="Progresso da apresentação"><div id="progressBar"></div></div>
+    <div class="slide-count" id="slideCount" aria-live="polite">1 / 23</div>
+    <button class="icon-btn" id="overviewBtn" aria-label="Ver todos os slides" title="Visão geral">▦</button>
+    <button class="icon-btn" id="sourcesBtn" aria-label="Abrir fontes" title="Fontes e créditos">☷</button>
+    <button class="icon-btn" id="helpBtn" aria-label="Abrir ajuda" title="Ajuda">?</button>
+    <button class="icon-btn" id="fullscreenBtn" aria-label="Alternar tela cheia" title="Tela cheia">⛶</button>
+  </header>
+
+  <main id="stage">
+    <section class="slide active" data-title="Abertura">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Informática Básica · Curso Subsequente de Música</div>
+          <h1>História da <span class="accent">Informática</span></h1>
+          <p class="hero-subtitle">Uma viagem das primeiras ferramentas de cálculo aos computadores que hoje gravam, editam e distribuem música.</p>
+          <div class="meta-row">
+            <span class="meta-chip">🕰️ História</span>
+            <span class="meta-chip">🧩 Hardware</span>
+            <span class="meta-chip">💻 Software</span>
+            <span class="meta-chip">🎵 Tecnologia musical</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <span class="floating-note note-a">♫</span>
+          <span class="floating-note note-b">♪</span>
+          <div class="computer">
+            <div class="screen">
+              <div class="waveform">
+                <i style="--h:34%;--d:-.1s"></i><i style="--h:61%;--d:-.8s"></i><i style="--h:85%;--d:-.3s"></i><i style="--h:48%;--d:-1.1s"></i><i style="--h:96%;--d:-.6s"></i><i style="--h:70%;--d:-.2s"></i><i style="--h:42%;--d:-.95s"></i><i style="--h:78%;--d:-.45s"></i><i style="--h:55%;--d:-1.2s"></i>
+              </div>
+            </div>
+            <div class="computer-base"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="A informática já está na música">
+      <div class="eyebrow">Aquecimento</div>
+      <h2>Onde a informática aparece na sua rotina musical?</h2>
+      <p class="lead">Clique nos cartões que fazem parte de uma experiência musical digital. A resposta pode surpreender.</p>
+      <div class="toggle-cards" id="warmupCards">
+        <button class="toggle-card"><span class="check">✓</span><strong>🎙️ Gravação</strong><span>Captura de voz e instrumentos.</span></button>
+        <button class="toggle-card"><span class="check">✓</span><strong>🎹 Instrumentos</strong><span>Teclados, controladores e MIDI.</span></button>
+        <button class="toggle-card"><span class="check">✓</span><strong>🎧 Reprodução</strong><span>Streaming, arquivos e caixas de som.</span></button>
+        <button class="toggle-card"><span class="check">✓</span><strong>🎼 Partituras</strong><span>Edição, leitura e compartilhamento.</span></button>
+        <button class="toggle-card"><span class="check">✓</span><strong>🎚️ Mixagem</strong><span>Efeitos, volumes e equalização.</span></button>
+        <button class="toggle-card"><span class="check">✓</span><strong>📣 Divulgação</strong><span>Redes sociais e plataformas digitais.</span></button>
+      </div>
+      <div class="prompt"><span>💬</span><span><strong>Converse com a turma:</strong> qual dessas atividades você já realizou usando um computador ou celular?</span></div>
+    </section>
+
+    <section class="slide" data-title="O que é informática?">
+      <div class="eyebrow">Conceito central</div>
+      <h2>Informática é transformar dados em informação útil</h2>
+      <div class="definition">É o tratamento <span class="accent">automático da informação</span> por meio de dispositivos, programas e procedimentos.</div>
+      <div class="concept-tabs">
+        <button class="pill-btn concept-btn active" data-concept="dados">Dados</button>
+        <button class="pill-btn concept-btn" data-concept="processamento">Processamento</button>
+        <button class="pill-btn concept-btn" data-concept="informacao">Informação</button>
+        <button class="pill-btn concept-btn" data-concept="automacao">Automação</button>
+      </div>
+      <div class="concept-output" id="conceptOutput">🎵 Um arquivo de áudio contém dados: milhares de amostras numéricas que representam o som.</div>
+    </section>
+
+    <section class="slide" data-title="Linha do tempo">
+      <div class="eyebrow">Panorama histórico</div>
+      <h2>O computador moderno nasceu de muitas ideias</h2>
+      <div class="timeline-shell">
+        <div class="timeline-buttons" id="timelineButtons">
+          <button class="time-btn active" data-year="Antiguidade" data-heading="Ábaco" data-body="Organizou quantidades de forma visual e tornou os cálculos mais rápidos. A ideia fundamental era representar números fisicamente."><strong>Antiguidade</strong>Ábaco</button>
+          <button class="time-btn" data-year="1642" data-heading="Pascalina" data-body="Blaise Pascal construiu uma calculadora mecânica capaz de realizar somas e subtrações por meio de rodas dentadas."><strong>1642</strong>Pascalina</button>
+          <button class="time-btn" data-year="1830–1843" data-heading="Babbage e Lovelace" data-body="A Máquina Analítica antecipou ideias como memória, processamento e programação; Ada Lovelace descreveu uma sequência de operações para a máquina."><strong>1830–1843</strong>Programação</button>
+          <button class="time-btn" data-year="1890" data-heading="Cartões perfurados" data-body="O sistema de Herman Hollerith acelerou o processamento do censo dos Estados Unidos e mostrou o valor do processamento automático de dados."><strong>1890</strong>Dados</button>
+          <button class="time-btn" data-year="1946" data-heading="ENIAC" data-body="Um grande computador eletrônico de uso geral demonstrou a velocidade das válvulas eletrônicas — ocupando uma sala inteira."><strong>1946</strong>ENIAC</button>
+          <button class="time-btn" data-year="1971" data-heading="Microprocessador" data-body="O Intel 4004 reuniu a unidade de processamento em um pequeno chip e ajudou a abrir o caminho para computadores menores."><strong>1971</strong>Chip</button>
+          <button class="time-btn" data-year="1981" data-heading="Computador pessoal" data-body="O IBM PC tornou-se uma referência importante para a popularização e padronização dos computadores pessoais."><strong>1981</strong>PC</button>
+          <button class="time-btn" data-year="1989" data-heading="World Wide Web" data-body="Tim Berners-Lee propôs no CERN um sistema para interligar e acessar informações por meio da internet: a Web."><strong>1989</strong>Web</button>
+          <button class="time-btn" data-year="Hoje" data-heading="Computação em toda parte" data-body="Smartphones, nuvem, inteligência artificial e dispositivos conectados tornaram a informática parte de quase todas as atividades humanas."><strong>Hoje</strong>Ubiquidade</button>
+        </div>
+        <div class="timeline-detail" aria-live="polite">
+          <div class="timeline-year" id="timelineYear">Antiguidade</div>
+          <h3 id="timelineHeading">Ábaco</h3>
+          <p id="timelineBody">Organizou quantidades de forma visual e tornou os cálculos mais rápidos. A ideia fundamental era representar números fisicamente.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Das contas às engrenagens">
+      <div class="eyebrow">Primeiros passos</div>
+      <h2>Antes da eletricidade, calcular era mover peças</h2>
+      <div class="history-grid">
+        <figure class="media-frame" style="min-height:390px">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Abacus_6.jpg?width=1200" alt="Ábaco chinês exibindo o número 2048" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+          <figcaption class="media-caption">Ábaco chinês — foto de David R. Tribble, Wikimedia Commons.</figcaption>
+        </figure>
+        <div class="stack">
+          <div class="fact-row"><b>Ábaco</b><span>Representa números e auxilia operações com o movimento de contas.</span></div>
+          <div class="fact-row"><b>Pascalina</b><span>Usava engrenagens para automatizar somas e subtrações.</span></div>
+          <div class="fact-row"><b>Ideia que permanece</b><span>Entrada de dados → regras de cálculo → resultado.</span></div>
+          <div class="prompt"><span>🤔</span><span><strong>Pense:</strong> uma calculadora é um computador? O que ela recebe, processa e devolve?</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Babbage e Ada Lovelace">
+      <div class="eyebrow">Uma máquina antes de seu tempo</div>
+      <h2>Babbage imaginou a máquina; Ada enxergou possibilidades</h2>
+      <div class="two-col">
+        <div class="card">
+          <div class="compare-media">
+            <figure class="media-frame">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Babbage_Difference_Engine.jpg?width=1000" alt="Máquina Diferencial baseada nos projetos de Charles Babbage" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+              <figcaption class="media-caption">Máquina Diferencial nº 2 — Wikimedia Commons.</figcaption>
+            </figure>
+            <figure class="media-frame portrait">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ada_Lovelace_portrait.jpg?width=700" alt="Retrato de Ada Lovelace" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+              <figcaption class="media-caption">Ada Lovelace — Alfred E. Chalon, domínio público.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="glass"><h3>⚙️ Charles Babbage</h3><p>Projetou máquinas mecânicas de cálculo. Sua Máquina Analítica previa elementos semelhantes a <b class="accent">processador, memória, entrada e saída</b>.</p></div>
+          <div class="glass"><h3>📝 Ada Lovelace</h3><p>Em 1843, publicou notas sobre a Máquina Analítica e descreveu uma sequência para calcular números de Bernoulli — um marco da história da programação.</p></div>
+          <div class="prompt"><span>🎼</span><span><strong>Conexão musical:</strong> Ada percebeu que símbolos poderiam representar mais que números. Em princípio, a máquina poderia operar também com relações musicais.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cartões perfurados">
+      <div class="eyebrow">Dados em papel</div>
+      <h2>Um furo podia representar uma informação</h2>
+      <div class="two-col">
+        <div>
+          <figure class="media-frame contain" style="min-height:245px">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hollerith_Punched_Card.jpg?width=1200" alt="Cartão perfurado do sistema de Herman Hollerith" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+            <figcaption class="media-caption">Cartão de Hollerith, c. 1895 — Library of Congress/Wikimedia Commons.</figcaption>
+          </figure>
+          <p style="margin-top:14px">Herman Hollerith usou cartões perfurados para acelerar o processamento do censo de 1890 nos Estados Unidos.</p>
+        </div>
+        <div>
+          <h3>Experimente representar dados</h3>
+          <p>Clique nos espaços para “perfurar” o cartão. Cada combinação pode codificar uma letra, um número ou uma instrução.</p>
+          <div class="punch-card" id="punchCard" aria-label="Simulador de cartão perfurado"></div>
+          <div class="prompt"><span>💡</span><span>O cartão era, ao mesmo tempo, <strong>meio de entrada</strong> e <strong>armazenamento de dados</strong>.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="A era eletrônica">
+      <div class="eyebrow">Década de 1940</div>
+      <h2>Com válvulas eletrônicas, a velocidade mudou de escala</h2>
+      <div class="history-grid">
+        <figure class="media-frame" style="min-height:380px">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/ENIAC_Penn1.jpg?width=1200" alt="Painéis do computador ENIAC" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+          <figcaption class="media-caption">Painéis do ENIAC — Paul W. Shaffer/University of Pennsylvania, via Wikimedia Commons.</figcaption>
+        </figure>
+        <div>
+          <p class="lead"><b class="accent">ENIAC</b> — Electronic Numerical Integrator and Computer — foi construído entre 1943 e 1946 e programado por conexões, chaves e painéis.</p>
+          <div class="metrics">
+            <div class="metric"><strong>≈18 mil</strong><span>válvulas eletrônicas</span></div>
+            <div class="metric"><strong>≈30 t</strong><span>de peso</span></div>
+            <div class="metric"><strong>1 sala</strong><span>ocupada pela máquina</span></div>
+          </div>
+          <div class="prompt"><span>📱</span><span><strong>Compare:</strong> hoje carregamos no bolso dispositivos muito menores e incomparavelmente mais capazes.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Gerações de computadores">
+      <div class="eyebrow">Evolução tecnológica</div>
+      <h2>Cada geração tornou os computadores menores e mais acessíveis</h2>
+      <div class="generation-tabs" id="generationTabs">
+        <button class="pill-btn gen-btn active" data-gen="1">1ª · Válvulas</button>
+        <button class="pill-btn gen-btn" data-gen="2">2ª · Transistores</button>
+        <button class="pill-btn gen-btn" data-gen="3">3ª · Circuitos integrados</button>
+        <button class="pill-btn gen-btn" data-gen="4">4ª · Microprocessadores</button>
+        <button class="pill-btn gen-btn" data-gen="5">Atual · Conectada e inteligente</button>
+      </div>
+      <div class="generation-display" id="generationDisplay" aria-live="polite">
+        <span class="big-icon">💡</span>
+        <div class="tag">Décadas de 1940–1950</div>
+        <h3>1ª geração: válvulas</h3>
+        <p>Máquinas enormes, alto consumo de energia e muito calor. A programação era próxima do funcionamento físico do equipamento.</p>
+      </div>
+      <p class="small muted" style="text-align:center;margin-top:12px">A divisão em “gerações” é uma forma didática de observar mudanças predominantes; tecnologias se sobrepõem ao longo do tempo.</p>
+    </section>
+
+    <section class="slide" data-title="Microprocessador e PC">
+      <div class="eyebrow">A informática chega à mesa</div>
+      <h2>O processador encolheu; o computador se popularizou</h2>
+      <div class="two-col">
+        <div class="card">
+          <div class="compare-media">
+            <figure class="media-frame contain">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Intel_C4004.jpg?width=900" alt="Microprocessador Intel 4004" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+              <figcaption class="media-caption">Intel 4004 — Thomas Nguyen, CC BY-SA 4.0.</figcaption>
+            </figure>
+            <figure class="media-frame contain">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/IBM_PC_5150.jpg?width=1000" alt="Computador pessoal IBM PC 5150" onerror="this.parentElement.classList.add('failed');this.style.display='none'">
+              <figcaption class="media-caption">IBM PC 5150 — Boffy b, Wikimedia Commons.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="glass"><h3>1971 · Intel 4004</h3><p>Um dos marcos da microeletrônica: a unidade de processamento reunida em um chip programável.</p></div>
+          <div class="glass"><h3>1981 · IBM PC</h3><p>Com arquitetura aberta a componentes e softwares de terceiros, tornou-se uma referência do mercado de computadores pessoais.</p></div>
+          <div class="glass"><h3>Resultado</h3><p>Mais pessoas passaram a usar computadores em escritórios, escolas, residências — e também na criação musical.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Web, mobilidade e nuvem">
+      <div class="eyebrow">Computação conectada</div>
+      <h2>O computador deixou a mesa e passou a acompanhar você</h2>
+      <div class="connection-line">
+        <div class="connection-node"><span class="big">🌐</span><h3>Web</h3><p>Em 1989, a proposta de Tim Berners-Lee no CERN abriu caminho para páginas e links na internet.</p></div>
+        <div class="arrow">→</div>
+        <div class="connection-node"><span class="big">📱</span><h3>Mobilidade</h3><p>Smartphones reúnem comunicação, câmera, gravação, edição e publicação.</p></div>
+        <div class="arrow">→</div>
+        <div class="connection-node"><span class="big">☁️</span><h3>Nuvem</h3><p>Arquivos e serviços podem ser acessados e compartilhados por diferentes dispositivos.</p></div>
+      </div>
+      <div class="prompt"><span>🎶</span><span>Uma música pode ser <strong>gravada no celular</strong>, editada em um notebook, salva na nuvem e publicada para o mundo inteiro.</span></div>
+    </section>
+
+    <section class="slide" data-title="O computador como sistema">
+      <div class="eyebrow">Modelo fundamental</div>
+      <h2>Todo sistema computacional realiza quatro funções básicas</h2>
+      <div class="system-grid" id="flowCards">
+        <button class="flow-card active" data-example="🎙️ O microfone captura a voz e a interface converte o som em dados digitais."><span class="flow-icon">⬇️</span><h3>Entrada</h3><p>Recebe dados e comandos.</p></button>
+        <button class="flow-card" data-example="⚙️ O processador e o software aplicam cortes, efeitos, ajustes e cálculos."><span class="flow-icon">⚙️</span><h3>Processamento</h3><p>Executa instruções sobre os dados.</p></button>
+        <button class="flow-card" data-example="🔊 A caixa de som ou o fone transforma os dados processados novamente em som."><span class="flow-icon">⬆️</span><h3>Saída</h3><p>Apresenta os resultados.</p></button>
+        <button class="flow-card" data-example="💾 O SSD salva o projeto, as gravações e as configurações para uso futuro."><span class="flow-icon">💾</span><h3>Armazenamento</h3><p>Guarda dados e programas.</p></button>
+      </div>
+      <div class="flow-example" id="flowExample">🎙️ O microfone captura a voz e a interface converte o som em dados digitais.</div>
+    </section>
+
+    <section class="slide" data-title="Conceito de hardware">
+      <div class="eyebrow">Parte física</div>
+      <h2>Hardware é tudo que forma fisicamente o sistema</h2>
+      <div class="hardware-cards">
+        <div class="hardware-card" data-label="CPU"><span class="h-icon">🧠</span><h3>Processamento</h3><p>CPU e GPU realizam cálculos e executam instruções.</p></div>
+        <div class="hardware-card" data-label="RAM"><span class="h-icon">⚡</span><h3>Memória</h3><p>A RAM mantém temporariamente dados que estão em uso.</p></div>
+        <div class="hardware-card" data-label="SSD"><span class="h-icon">💾</span><h3>Armazenamento</h3><p>SSD, HD e cartões guardam arquivos mesmo após desligar.</p></div>
+        <div class="hardware-card" data-label="I/O"><span class="h-icon">⌨️</span><h3>Periféricos</h3><p>Permitem entrada, saída, comunicação e captura.</p></div>
+      </div>
+      <div class="prompt"><span>🖐️</span><span><strong>Regra prática:</strong> se é uma peça física, é hardware — inclusive o microfone, a interface de áudio e os cabos.</span></div>
+    </section>
+
+    <section class="slide" data-title="Componentes internos">
+      <div class="eyebrow">Explore o computador</div>
+      <h2>Cada componente tem um papel diferente</h2>
+      <div class="explorer">
+        <div class="component-list" id="componentList">
+          <button class="component-btn active" data-component="cpu"><b>🧠 CPU</b><small>Processamento geral</small></button>
+          <button class="component-btn" data-component="ram"><b>⚡ Memória RAM</b><small>Trabalho temporário</small></button>
+          <button class="component-btn" data-component="storage"><b>💾 SSD / HD</b><small>Dados permanentes</small></button>
+          <button class="component-btn" data-component="board"><b>🧩 Placa-mãe</b><small>Conexão das peças</small></button>
+          <button class="component-btn" data-component="gpu"><b>🎨 GPU</b><small>Gráficos e paralelismo</small></button>
+          <button class="component-btn" data-component="psu"><b>🔌 Fonte</b><small>Energia elétrica</small></button>
+          <button class="component-btn" data-component="audio"><b>🎚️ Interface de áudio</b><small>Entrada e saída sonora</small></button>
+          <button class="component-btn" data-component="cooling"><b>❄️ Refrigeração</b><small>Controle de temperatura</small></button>
+        </div>
+        <div class="component-detail" id="componentDetail" aria-live="polite">
+          <div class="component-icon">🧠</div>
+          <div><h3>CPU — Unidade Central de Processamento</h3><div class="detail-lines"><span><b>Função:</b> executar instruções e coordenar tarefas.</span><span><b>Analogia:</b> o regente que organiza a execução.</span><span><b>Na música:</b> processa instrumentos virtuais, efeitos e mixagens.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Periféricos — atividade">
+      <div class="eyebrow">Atividade interativa</div>
+      <h2>Classifique os periféricos por sua função</h2>
+      <p class="lead">Arraste os itens ou clique em um item e depois na categoria correta.</p>
+      <div class="classify-shell">
+        <div>
+          <div class="draggables" id="dragItems">
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="entrada">⌨️ Teclado</div>
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="entrada">🎙️ Microfone</div>
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="saida">🖥️ Monitor</div>
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="saida">🔊 Caixa de som</div>
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="armazenamento">🔑 Pendrive</div>
+            <div class="drag-item" draggable="true" tabindex="0" data-kind="misto">📱 Tela sensível ao toque</div>
+          </div>
+          <div class="game-status"><span id="classifyStatus">0 de 6 classificados</span><button class="secondary-btn" id="resetClassify">Reiniciar</button></div>
+        </div>
+        <div class="drop-zones">
+          <div class="drop-zone" role="button" tabindex="0" data-accept="entrada"><b>⬇️ Entrada</b><div class="placed-labels">Envia dados ao sistema.</div></div>
+          <div class="drop-zone" role="button" tabindex="0" data-accept="saida"><b>⬆️ Saída</b><div class="placed-labels">Apresenta resultados.</div></div>
+          <div class="drop-zone" role="button" tabindex="0" data-accept="armazenamento"><b>💾 Armazenamento</b><div class="placed-labels">Guarda dados.</div></div>
+          <div class="drop-zone" role="button" tabindex="0" data-accept="misto"><b>↕️ Entrada e saída</b><div class="placed-labels">Realiza as duas funções.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Conceito de software">
+      <div class="eyebrow">Parte lógica</div>
+      <h2>Software é o conjunto de instruções que dá função ao hardware</h2>
+      <p class="lead" style="margin-left:auto;margin-right:auto;text-align:center">Clique nas camadas para entender como um comando chega até a máquina.</p>
+      <div class="software-stack" id="softwareStack">
+        <button class="software-layer active" data-layer="app"><b>🎵 Aplicativo</b><span>Você edita uma faixa em uma DAW, escreve uma partitura ou ouve música.</span></button>
+        <button class="software-layer" data-layer="os"><b>🪟 Sistema operacional</b><span>Gerencia arquivos, memória, dispositivos e oferece serviços aos aplicativos.</span></button>
+        <button class="software-layer" data-layer="driver"><b>🔧 Driver</b><span>Permite que o sistema operacional se comunique com um dispositivo específico.</span></button>
+        <button class="software-layer" data-layer="hardware"><b>🧩 Hardware</b><span>Executa fisicamente as instruções e movimenta os dados.</span></button>
+      </div>
+      <div class="software-output" id="softwareOutput">Aplicativos atendem a uma necessidade do usuário — criar, comunicar, calcular, tocar, gravar ou editar.</div>
+    </section>
+
+    <section class="slide" data-title="Tipos de software">
+      <div class="eyebrow">Categorias</div>
+      <h2>Nem todo software faz o mesmo tipo de trabalho</h2>
+      <p class="lead">Clique nos cartões para ver exemplos.</p>
+      <div class="card-grid four" id="flipCards">
+        <button class="flip-card" aria-label="Virar cartão Sistema">
+          <span class="flip-inner"><span class="flip-face"><span class="big">🖥️</span><h3>Software de sistema</h3><p>Administra os recursos do computador.</p></span><span class="flip-face flip-back"><h3>Exemplos</h3><p>Windows, Linux, Android e macOS.</p></span></span>
+        </button>
+        <button class="flip-card" aria-label="Virar cartão Aplicativo">
+          <span class="flip-inner"><span class="flip-face"><span class="big">🎹</span><h3>Aplicativo</h3><p>Ajuda o usuário a realizar uma tarefa.</p></span><span class="flip-face flip-back"><h3>Exemplos</h3><p>Navegador, editor de texto, MuseScore, Reaper e Audacity.</p></span></span>
+        </button>
+        <button class="flip-card" aria-label="Virar cartão Utilitário">
+          <span class="flip-inner"><span class="flip-face"><span class="big">🧰</span><h3>Utilitário</h3><p>Faz manutenção, proteção ou apoio.</p></span><span class="flip-face flip-back"><h3>Exemplos</h3><p>Antivírus, compactador, backup e limpeza de disco.</p></span></span>
+        </button>
+        <button class="flip-card" aria-label="Virar cartão Firmware e driver">
+          <span class="flip-inner"><span class="flip-face"><span class="big">⚙️</span><h3>Firmware e driver</h3><p>Ligam funções do dispositivo ao sistema.</p></span><span class="flip-face flip-back"><h3>Exemplos</h3><p>Firmware de teclado digital e driver de interface de áudio.</p></span></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Hardware e software juntos">
+      <div class="eyebrow">Analogia musical</div>
+      <h2>Um computador funciona como uma apresentação musical</h2>
+      <div class="analogy-table">
+        <div class="head">Computador</div><div class="head">Na música</div><div class="head">Ideia principal</div>
+        <div class="cell"><b>Hardware</b></div><div class="cell">Instrumentos e equipamentos</div><div class="cell">É a estrutura física que permite a execução.</div>
+        <div class="cell"><b>Software</b></div><div class="cell">Partitura e arranjo</div><div class="cell">Organiza instruções sobre o que deve ser feito.</div>
+        <div class="cell"><b>CPU</b></div><div class="cell">Regente</div><div class="cell">Coordena tarefas e mantém a execução em andamento.</div>
+        <div class="cell"><b>RAM</b></div><div class="cell">Estante de partituras</div><div class="cell">Mantém à mão o que está sendo usado agora.</div>
+        <div class="cell"><b>Usuário</b></div><div class="cell">Músico ou produtor</div><div class="cell">Define objetivos, escolhe ferramentas e toma decisões.</div>
+      </div>
+      <div class="prompt"><span>🎻</span><span>Instrumentos sem músicos não produzem a apresentação; software sem hardware também não executa. <strong>O sistema depende da cooperação entre as partes.</strong></span></div>
+    </section>
+
+    <section class="slide" data-title="Informática na produção musical">
+      <div class="eyebrow">Aplicação prática</div>
+      <h2>Do som ao arquivo: acompanhe a cadeia digital</h2>
+      <div class="music-grid" id="musicChain">
+        <button class="music-node active" data-detail="O microfone é um hardware de entrada: transforma ondas sonoras em sinal elétrico."><span class="big">🎙️</span><h3>Microfone</h3><p>Captura</p></button>
+        <button class="music-node" data-detail="A interface de áudio converte o sinal analógico em dados digitais e faz o caminho inverso na reprodução."><span class="big">🎚️</span><h3>Interface</h3><p>Conversão</p></button>
+        <button class="music-node" data-detail="O computador usa CPU, RAM e armazenamento para executar o projeto de áudio."><span class="big">💻</span><h3>Computador</h3><p>Processamento</p></button>
+        <button class="music-node" data-detail="A DAW é o software usado para gravar, editar, organizar, mixar e exportar as faixas."><span class="big">🎛️</span><h3>DAW</h3><p>Edição</p></button>
+        <button class="music-node" data-detail="Fones e caixas são hardwares de saída: convertem o sinal novamente em som audível."><span class="big">🎧</span><h3>Monitoração</h3><p>Saída</p></button>
+      </div>
+      <div class="music-output" id="musicOutput">O microfone é um hardware de entrada: transforma ondas sonoras em sinal elétrico.</div>
+    </section>
+
+    <section class="slide" data-title="Escolha as ferramentas">
+      <div class="eyebrow">Situações reais</div>
+      <h2>Uma tarefa exige hardware e software adequados</h2>
+      <div class="scenario-tabs" id="scenarioTabs">
+        <button class="pill-btn scenario-btn active" data-scenario="record">🎙️ Gravar voz</button>
+        <button class="pill-btn scenario-btn" data-scenario="score">🎼 Editar partitura</button>
+        <button class="pill-btn scenario-btn" data-scenario="repertoire">📚 Organizar repertório</button>
+      </div>
+      <div class="scenario-display" id="scenarioDisplay" aria-live="polite">
+        <div class="scenario-side"><span class="big">🧩</span><h3>Hardware</h3><ul><li>Microfone</li><li>Interface de áudio</li><li>Computador ou celular</li><li>Fone de ouvido</li></ul></div>
+        <div class="scenario-side"><span class="big">💻</span><h3>Software</h3><ul><li>Aplicativo de gravação ou DAW</li><li>Driver da interface</li><li>Sistema operacional</li><li>Plugin, quando necessário</li></ul></div>
+      </div>
+      <div class="prompt"><span>🧠</span><span><strong>Critério:</strong> primeiro defina a tarefa; depois escolha os recursos. O equipamento mais caro nem sempre é o mais adequado.</span></div>
+    </section>
+
+    <section class="slide" data-title="Revisão rápida">
+      <div class="eyebrow">Antes do quiz</div>
+      <h2>Verdadeiro ou falso?</h2>
+      <div class="quick-checks" id="quickChecks">
+        <div class="quick-row" data-answer="true"><p>1. A memória RAM mantém temporariamente dados dos programas em uso.</p><div class="quick-actions"><button data-choice="true">V</button><button data-choice="false">F</button></div><div class="quick-result">Verdadeiro. A RAM é rápida e volátil: perde o conteúdo quando o equipamento é desligado.</div></div>
+        <div class="quick-row" data-answer="false"><p>2. O sistema operacional é um exemplo de hardware.</p><div class="quick-actions"><button data-choice="true">V</button><button data-choice="false">F</button></div><div class="quick-result">Falso. O sistema operacional é software de sistema.</div></div>
+        <div class="quick-row" data-answer="true"><p>3. Um microfone pode ser considerado um dispositivo de entrada.</p><div class="quick-actions"><button data-choice="true">V</button><button data-choice="false">F</button></div><div class="quick-result">Verdadeiro. Ele envia ao sistema um sinal que será convertido e processado.</div></div>
+        <div class="quick-row" data-answer="false"><p>4. Hardware funciona de forma útil sem qualquer instrução de software.</p><div class="quick-actions"><button data-choice="true">V</button><button data-choice="false">F</button></div><div class="quick-result">Falso. O software orienta as operações que o hardware deve executar.</div></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Quiz final">
+      <div class="eyebrow">Desafio final · 10 questões</div>
+      <h2>Vamos conferir o que ficou?</h2>
+      <div class="quiz-shell" id="quizShell">
+        <div class="quiz-head"><span id="quizCounter">Questão 1 de 10</span><div class="quiz-mini-progress"><div id="quizProgress" style="width:10%"></div></div><span id="quizScore">0 ponto</span></div>
+        <div class="quiz-card" id="quizCard"></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Síntese e saída">
+      <div class="eyebrow">Fechamento</div>
+      <h2>Agora você consegue enxergar o sistema por trás da música digital</h2>
+      <div class="outcomes">
+        <div class="outcome"><span class="big">🕰️</span><h3>Reconhecer</h3><p>Os principais passos que levaram dos instrumentos de cálculo aos computadores atuais.</p></div>
+        <div class="outcome"><span class="big">🧩</span><h3>Distinguir</h3><p>Hardware, software e as funções de cada componente em um sistema.</p></div>
+        <div class="outcome"><span class="big">🎵</span><h3>Aplicar</h3><p>Os conceitos à gravação, edição, reprodução e organização musical.</p></div>
+      </div>
+      <div class="definition" style="font-size:clamp(20px,2vw,31px);margin-bottom:0">🎫 <b>Bilhete de saída:</b> cite um hardware e um software que você usa na música — e explique a função de cada um.</div>
+    </section>
+  </main>
+
+  <footer class="controls">
+    <div class="teacher">Professor: José Raimundo · IFPB</div>
+    <div class="key-hint">Use <kbd>←</kbd> <kbd>→</kbd> para navegar</div>
+    <div class="nav-group">
+      <button class="nav-btn" id="prevBtn" disabled><span aria-hidden="true">←</span> <span class="nav-text">Anterior</span></button>
+      <button class="nav-btn next" id="nextBtn"><span class="nav-text">Próximo</span> <span aria-hidden="true">→</span></button>
+    </div>
+  </footer>
+
+  <div class="modal" id="overviewModal" role="dialog" aria-modal="true" aria-labelledby="overviewTitle">
+    <div class="modal-panel">
+      <div class="modal-head"><h2 id="overviewTitle">Visão geral</h2><button class="icon-btn close-modal" aria-label="Fechar">×</button></div>
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="sourcesModal" role="dialog" aria-modal="true" aria-labelledby="sourcesTitle">
+    <div class="modal-panel">
+      <div class="modal-head"><h2 id="sourcesTitle">Fontes e créditos</h2><button class="icon-btn close-modal" aria-label="Fechar">×</button></div>
+      <div class="sources-list">
+        <div class="source-item"><b>Linha do tempo da computação</b><p><a href="https://www.computerhistory.org/timeline/computers/" target="_blank" rel="noopener">Computer History Museum — Timeline of Computer History</a></p></div>
+        <div class="source-item"><b>Charles Babbage e a Máquina Diferencial</b><p><a href="https://www.sciencemuseum.org.uk/objects-and-stories/charles-babbages-difference-engines-and-science-museum" target="_blank" rel="noopener">Science Museum, Londres</a></p></div>
+        <div class="source-item"><b>Ada Lovelace e Babbage</b><p><a href="https://www.hsm.ox.ac.uk/imagining-ai" target="_blank" rel="noopener">History of Science Museum, University of Oxford</a></p></div>
+        <div class="source-item"><b>Hollerith e os cartões perfurados</b><p><a href="https://www.loc.gov/item/mcc.023/" target="_blank" rel="noopener">Library of Congress</a></p></div>
+        <div class="source-item"><b>ENIAC</b><p><a href="https://www.si.edu/object/eniac-accumulator-2:nmah_334742" target="_blank" rel="noopener">Smithsonian Institution</a></p></div>
+        <div class="source-item"><b>Transistor e evolução dos semicondutores</b><p><a href="https://www.computerhistory.org/siliconengine/timeline/" target="_blank" rel="noopener">Computer History Museum — The Silicon Engine</a></p></div>
+        <div class="source-item"><b>Intel 4004, 1971</b><p><a href="https://www.intel.com/content/www/us/en/history/virtual-vault/articles/the-intel-4004.html" target="_blank" rel="noopener">Intel — Announcing a New Era of Integrated Electronics</a></p></div>
+        <div class="source-item"><b>IBM PC, 1981</b><p><a href="https://www.ibm.com/history/personal-computer" target="_blank" rel="noopener">IBM History — The IBM PC</a></p></div>
+        <div class="source-item"><b>Nascimento da World Wide Web</b><p><a href="https://home.cern/science/computing/the-birth-of-the-web/short-history-web/" target="_blank" rel="noopener">CERN — A short history of the Web</a></p></div>
+        <div class="source-item"><b>Imagens históricas</b><p>Ábaco: David R. Tribble · Máquina Diferencial: Geni · Ada Lovelace: Alfred Edward Chalon · Cartão de Hollerith: Library of Congress · ENIAC: Paul W. Shaffer/University of Pennsylvania · Intel 4004: Thomas Nguyen · IBM PC: Boffy b. Arquivos disponibilizados por <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>, conforme as licenças indicadas em suas páginas.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-panel" style="width:min(760px,95vw)">
+      <div class="modal-head"><h2 id="helpTitle">Como apresentar</h2><button class="icon-btn close-modal" aria-label="Fechar">×</button></div>
+      <div class="help-grid">
+        <div class="card"><h3><kbd>←</kbd> <kbd>→</kbd></h3><p>Navegar entre os slides.</p></div>
+        <div class="card"><h3><kbd>F</kbd></h3><p>Entrar ou sair da tela cheia.</p></div>
+        <div class="card"><h3><kbd>O</kbd></h3><p>Abrir a visão geral.</p></div>
+        <div class="card"><h3><kbd>Esc</kbd></h3><p>Fechar janelas ou sair da tela cheia.</p></div>
+      </div>
+      <p class="small muted" style="margin-top:18px">Também é possível navegar pelos botões, usar Page Up/Page Down e deslizar horizontalmente em telas sensíveis ao toque.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const slides = [...document.querySelectorAll('.slide')];
+      const progressBar = document.getElementById('progressBar');
+      const slideCount = document.getElementById('slideCount');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const toastEl = document.getElementById('toast');
+      let current = 0;
+      let toastTimer;
+
+      const toast = (message) => {
+        clearTimeout(toastTimer);
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2300);
+      };
+
+      const showSlide = (index) => {
+        const target = Math.max(0, Math.min(slides.length - 1, index));
+        if (target === current) return;
+        const old = slides[current];
+        old.classList.toggle('leaving-left', target > current);
+        old.classList.remove('active');
+        current = target;
+        slides[current].classList.remove('leaving-left');
+        slides[current].classList.add('active');
+        slides[current].scrollTop = 0;
+        updateChrome();
+      };
+
+      const updateChrome = () => {
+        slideCount.textContent = `${current + 1} / ${slides.length}`;
+        progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === slides.length - 1;
+        document.title = `${slides[current].dataset.title} — Informática Básica`;
+        document.querySelectorAll('.overview-item').forEach((el, i) => el.classList.toggle('current', i === current));
+      };
+
+      prevBtn.addEventListener('click', () => showSlide(current - 1));
+      nextBtn.addEventListener('click', () => showSlide(current + 1));
+
+      const openModal = (id) => {
+        document.getElementById(id).classList.add('open');
+        document.getElementById(id).querySelector('button').focus();
+      };
+      const closeModals = () => document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+      document.getElementById('overviewBtn').addEventListener('click', () => openModal('overviewModal'));
+      document.getElementById('sourcesBtn').addEventListener('click', () => openModal('sourcesModal'));
+      document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
+      document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', closeModals));
+      document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', e => { if (e.target === modal) closeModals(); }));
+
+      const overviewGrid = document.getElementById('overviewGrid');
+      slides.forEach((slide, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'overview-item';
+        btn.innerHTML = `<small>SLIDE ${String(i + 1).padStart(2, '0')}</small><span>${slide.dataset.title}</span>`;
+        btn.addEventListener('click', () => { closeModals(); showSlide(i); });
+        overviewGrid.appendChild(btn);
+      });
+
+      const toggleFullscreen = async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (_) { toast('O navegador não permitiu a tela cheia.'); }
+      };
+      document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+
+      document.addEventListener('keydown', e => {
+        const modalOpen = document.querySelector('.modal.open');
+        if (e.key === 'Escape' && modalOpen) { closeModals(); return; }
+        if (modalOpen) return;
+        const interactive = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+        if (interactive) return;
+        if (['ArrowRight', 'PageDown'].includes(e.key) || (e.key === ' ' && document.activeElement === document.body)) { e.preventDefault(); showSlide(current + 1); }
+        if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); showSlide(current - 1); }
+        if (e.key === 'Home') showSlide(0);
+        if (e.key === 'End') showSlide(slides.length - 1);
+        if (e.key.toLowerCase() === 'f') toggleFullscreen();
+        if (e.key.toLowerCase() === 'o') openModal('overviewModal');
+      });
+
+      let touchStartX = null;
+      document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+      document.addEventListener('touchend', e => {
+        if (touchStartX === null || document.querySelector('.modal.open')) return;
+        const delta = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(delta) > 70) showSlide(current + (delta < 0 ? 1 : -1));
+        touchStartX = null;
+      }, { passive: true });
+
+      // Fundo em movimento suave — desativado automaticamente por preferência de movimento reduzido.
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let particles = [];
+      const resizeCanvas = () => {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = innerWidth * dpr;
+        canvas.height = innerHeight * dpr;
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        particles = Array.from({ length: Math.min(55, Math.floor(innerWidth / 24)) }, () => ({
+          x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+          vx: (Math.random() - .5) * .12, vy: (Math.random() - .5) * .12,
+          r: Math.random() * 1.5 + .4
+        }));
+      };
+      const drawCanvas = () => {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        particles.forEach((p, i) => {
+          if (!reduceMotion) { p.x += p.vx; p.y += p.vy; }
+          if (p.x < 0) p.x = innerWidth; if (p.x > innerWidth) p.x = 0;
+          if (p.y < 0) p.y = innerHeight; if (p.y > innerHeight) p.y = 0;
+          ctx.fillStyle = i % 3 === 0 ? 'rgba(155,123,255,.38)' : 'rgba(55,215,255,.34)';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
+            if (d < 115) { ctx.strokeStyle = `rgba(55,215,255,${.055 * (1 - d / 115)})`; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); }
+          }
+        });
+        if (!reduceMotion) requestAnimationFrame(drawCanvas);
+      };
+      resizeCanvas(); drawCanvas(); addEventListener('resize', resizeCanvas);
+
+      // Aquecimento.
+      document.querySelectorAll('#warmupCards .toggle-card').forEach(card => card.addEventListener('click', () => {
+        card.classList.toggle('found');
+        const found = document.querySelectorAll('#warmupCards .found').length;
+        if (found === 6) toast('Isso mesmo: a informática participa de todas essas atividades!');
+      }));
+
+      const concepts = {
+        dados: '🎵 Um arquivo de áudio contém dados: milhares de amostras numéricas que representam o som.',
+        processamento: '🎚️ Equalizar, cortar ou aplicar reverberação transforma os dados de áudio segundo instruções.',
+        informacao: '📊 Quando os dados são organizados e interpretados, ajudam a compreender e tomar decisões.',
+        automacao: '⚙️ O computador repete instruções com rapidez e precisão, liberando tempo para escolhas criativas.'
+      };
+      document.querySelectorAll('.concept-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.concept-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+        document.getElementById('conceptOutput').textContent = concepts[btn.dataset.concept];
+      }));
+
+      document.querySelectorAll('.time-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+        document.getElementById('timelineYear').textContent = btn.dataset.year;
+        document.getElementById('timelineHeading').textContent = btn.dataset.heading;
+        document.getElementById('timelineBody').textContent = btn.dataset.body;
+      }));
+
+      // Cartão perfurado.
+      const punchCard = document.getElementById('punchCard');
+      for (let i = 0; i < 96; i++) {
+        const hole = document.createElement('button');
+        hole.className = 'punch-hole';
+        hole.setAttribute('aria-label', `Posição ${i + 1}`);
+        if ([2,7,13,18,23,29,34,41,47,52,58,63,68,75,81,86,91].includes(i)) hole.classList.add('on');
+        hole.addEventListener('click', () => hole.classList.toggle('on'));
+        punchCard.appendChild(hole);
+      }
+
+      const generations = {
+        1: ['💡','Décadas de 1940–1950','1ª geração: válvulas','Máquinas enormes, alto consumo de energia e muito calor. A programação era próxima do funcionamento físico do equipamento.'],
+        2: ['🔘','Décadas de 1950–1960','2ª geração: transistores','Os transistores substituíram válvulas em muitas aplicações, reduzindo tamanho, consumo e falhas.'],
+        3: ['▦','Décadas de 1960–1970','3ª geração: circuitos integrados','Muitos componentes passaram a ser reunidos em um mesmo chip, aumentando a confiabilidade e a capacidade.'],
+        4: ['🧠','A partir da década de 1970','4ª geração: microprocessadores','A CPU em um chip impulsionou calculadoras, computadores pessoais e uma enorme diversidade de dispositivos.'],
+        5: ['🌐','Computação contemporânea','Conectada, móvel e inteligente','Redes, nuvem, dispositivos móveis e inteligência artificial ampliam onde e como a computação é usada.']
+      };
+      document.querySelectorAll('.gen-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.gen-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+        const g = generations[btn.dataset.gen];
+        document.getElementById('generationDisplay').innerHTML = `<span class="big-icon">${g[0]}</span><div class="tag">${g[1]}</div><h3>${g[2]}</h3><p>${g[3]}</p>`;
+      }));
+
+      document.querySelectorAll('.flow-card').forEach(card => card.addEventListener('click', () => {
+        document.querySelectorAll('.flow-card').forEach(c => c.classList.remove('active')); card.classList.add('active');
+        document.getElementById('flowExample').textContent = card.dataset.example;
+      }));
+
+      const components = {
+        cpu: ['🧠','CPU — Unidade Central de Processamento','executar instruções e coordenar tarefas.','o regente que organiza a execução.','processa instrumentos virtuais, efeitos e mixagens.'],
+        ram: ['⚡','Memória RAM','manter rapidamente os dados que estão sendo usados agora.','a estante com as partituras abertas.','ajuda a manter projetos e amostras de áudio disponíveis durante a edição.'],
+        storage: ['💾','SSD / HD','guardar sistema, programas e arquivos de forma persistente.','o acervo onde partituras e gravações ficam arquivadas.','armazena projetos, bibliotecas de timbres e gravações.'],
+        board: ['🧩','Placa-mãe','interligar processador, memória, armazenamento e conexões.','o palco e sua infraestrutura de ligação.','permite que todas as partes troquem dados.'],
+        gpu: ['🎨','GPU — Unidade de Processamento Gráfico','processar imagens e muitas operações em paralelo.','uma equipe especializada em uma parte da apresentação.','desenha interfaces, vídeos e visualizações; alguns softwares usam seu paralelismo.'],
+        psu: ['🔌','Fonte de alimentação','converter e distribuir energia elétrica aos componentes.','a alimentação elétrica do palco.','mantém o sistema energizado de forma estável.'],
+        audio: ['🎚️','Interface de áudio','converter sinais entre os mundos analógico e digital.','a ponte entre instrumentos, microfones e sistema de som.','melhora entradas, saídas, conexões e controle de latência.'],
+        cooling: ['❄️','Sistema de refrigeração','retirar o calor gerado pelos componentes.','a ventilação que mantém o ambiente em condição adequada.','evita perda de desempenho e protege o equipamento em sessões longas.']
+      };
+      document.querySelectorAll('.component-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.component-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+        const c = components[btn.dataset.component];
+        document.getElementById('componentDetail').innerHTML = `<div class="component-icon">${c[0]}</div><div><h3>${c[1]}</h3><div class="detail-lines"><span><b>Função:</b> ${c[2]}</span><span><b>Analogia:</b> ${c[3]}</span><span><b>Na música:</b> ${c[4]}</span></div></div>`;
+      }));
+
+      // Jogo de classificação por arrastar ou clicar.
+      let selectedPeriph = null, placedCount = 0;
+      const dragItems = [...document.querySelectorAll('.drag-item')];
+      const zones = [...document.querySelectorAll('.drop-zone')];
+      const selectItem = item => {
+        if (item.classList.contains('placed')) return;
+        dragItems.forEach(i => i.classList.remove('selected'));
+        selectedPeriph = item;
+        item.classList.add('selected');
+        toast(`Selecionado: ${item.textContent.trim()}. Escolha uma categoria.`);
+      };
+      const attemptPlace = (item, zone) => {
+        if (!item || item.classList.contains('placed')) return;
+        if (item.dataset.kind === zone.dataset.accept) {
+          item.classList.add('placed'); item.classList.remove('selected');
+          const label = document.createElement('span'); label.textContent = ` • ${item.textContent.trim()}`;
+          zone.querySelector('.placed-labels').appendChild(label);
+          placedCount++; selectedPeriph = null;
+          document.getElementById('classifyStatus').textContent = `${placedCount} de 6 classificados`;
+          toast(placedCount === 6 ? 'Excelente! Todos os periféricos foram classificados.' : 'Correto!');
+        } else { toast('Ainda não. Observe o sentido em que os dados circulam.'); }
+      };
+      dragItems.forEach(item => {
+        item.addEventListener('click', () => selectItem(item));
+        item.addEventListener('keydown', e => { if (['Enter',' '].includes(e.key)) { e.preventDefault(); selectItem(item); } });
+        item.addEventListener('dragstart', e => { selectedPeriph = item; e.dataTransfer.setData('text/plain', item.textContent); });
+      });
+      zones.forEach(zone => {
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); attemptPlace(selectedPeriph, zone); });
+        zone.addEventListener('click', () => attemptPlace(selectedPeriph, zone));
+        zone.addEventListener('keydown', e => { if (['Enter',' '].includes(e.key)) { e.preventDefault(); attemptPlace(selectedPeriph, zone); } });
+      });
+      document.getElementById('resetClassify').addEventListener('click', () => {
+        placedCount = 0; selectedPeriph = null;
+        dragItems.forEach(i => i.classList.remove('selected','placed'));
+        zones.forEach(z => {
+          const base = { entrada:'Envia dados ao sistema.', saida:'Apresenta resultados.', armazenamento:'Guarda dados.', misto:'Realiza as duas funções.' }[z.dataset.accept];
+          z.querySelector('.placed-labels').textContent = base;
+        });
+        document.getElementById('classifyStatus').textContent = '0 de 6 classificados';
+      });
+
+      const layerTexts = {
+        app: 'Aplicativos atendem a uma necessidade do usuário — criar, comunicar, calcular, tocar, gravar ou editar.',
+        os: 'O sistema operacional coordena o acesso ao processador, à memória, aos arquivos e aos periféricos.',
+        driver: 'O driver traduz comandos gerais do sistema para as particularidades de um equipamento.',
+        hardware: 'No nível físico, circuitos eletrônicos executam as operações e movimentam os dados.'
+      };
+      document.querySelectorAll('.software-layer').forEach(layer => layer.addEventListener('click', () => {
+        document.querySelectorAll('.software-layer').forEach(l => l.classList.remove('active')); layer.classList.add('active');
+        document.getElementById('softwareOutput').textContent = layerTexts[layer.dataset.layer];
+      }));
+
+      document.querySelectorAll('.flip-card').forEach(card => card.addEventListener('click', () => card.classList.toggle('flipped')));
+
+      document.querySelectorAll('.music-node').forEach(node => node.addEventListener('click', () => {
+        document.querySelectorAll('.music-node').forEach(n => n.classList.remove('active')); node.classList.add('active');
+        document.getElementById('musicOutput').textContent = node.dataset.detail;
+      }));
+
+      const scenarios = {
+        record: { h:['Microfone','Interface de áudio','Computador ou celular','Fone de ouvido'], s:['Aplicativo de gravação ou DAW','Driver da interface','Sistema operacional','Plugin, quando necessário'] },
+        score: { h:['Computador ou tablet','Teclado e mouse ou caneta','Monitor','Impressora, se necessária'], s:['Editor de partituras','Sistema operacional','Leitor de PDF','Armazenamento em nuvem'] },
+        repertoire: { h:['Celular, tablet ou notebook','Armazenamento local','Conexão de rede','Tela adequada para leitura'], s:['Gerenciador de arquivos','Planilha ou banco de dados','Aplicativo de notas','Serviço de backup'] }
+      };
+      const renderScenario = key => {
+        const s = scenarios[key];
+        document.getElementById('scenarioDisplay').innerHTML = `<div class="scenario-side"><span class="big">🧩</span><h3>Hardware</h3><ul>${s.h.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="scenario-side"><span class="big">💻</span><h3>Software</h3><ul>${s.s.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+      };
+      document.querySelectorAll('.scenario-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderScenario(btn.dataset.scenario);
+      }));
+
+      document.querySelectorAll('.quick-row').forEach(row => row.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+        if (row.classList.contains('answered')) return;
+        const correct = btn.dataset.choice === row.dataset.answer;
+        row.classList.add('answered', correct ? 'correct' : 'wrong');
+        btn.style.background = correct ? 'rgba(81,230,163,.16)' : 'rgba(255,112,128,.16)';
+      })));
+
+      const quizData = [
+        { q:'1. Qual definição melhor representa a informática?', o:['Montagem de peças eletrônicas apenas','Tratamento automático da informação com dispositivos e programas','Uso exclusivo da internet','Criação de documentos de texto'], a:1, e:'Informática envolve dados, processamento, hardware, software e procedimentos — não apenas uma ferramenta específica.' },
+        { q:'2. Qual instrumento antigo ajudava a representar quantidades e realizar cálculos?', o:['Ábaco','Monitor','Transistor','Impressora'], a:0, e:'O ábaco é uma das mais antigas ferramentas de auxílio ao cálculo.' },
+        { q:'3. O que tornou a Máquina Analítica de Babbage especialmente importante?', o:['Já usava tela sensível ao toque','Antecipou ideias de memória, processamento, entrada e saída','Foi o primeiro smartphone','Funcionava com inteligência artificial'], a:1, e:'Embora não tenha sido concluída como planejada, sua concepção reuniu ideias presentes nos computadores.' },
+        { q:'4. Qual tecnologia predominava em computadores como o ENIAC?', o:['Microprocessadores','Fibra óptica','Válvulas eletrônicas','Telas LCD'], a:2, e:'O ENIAC pertence à era das válvulas: era grande, consumia muita energia e gerava calor.' },
+        { q:'5. Qual dos itens abaixo é hardware?', o:['Windows','Editor de partituras','Memória RAM','Navegador'], a:2, e:'A memória RAM é um componente físico. Os demais itens são softwares.' },
+        { q:'6. Qual é a função principal do sistema operacional?', o:['Substituir o processador','Gerenciar recursos e oferecer serviços aos aplicativos','Apenas reproduzir músicas','Aumentar fisicamente o armazenamento'], a:1, e:'O sistema operacional coordena memória, processador, arquivos, dispositivos e aplicativos.' },
+        { q:'7. Qual componente executa instruções e coordena grande parte do processamento?', o:['CPU','Monitor','Teclado','Caixa de som'], a:0, e:'A CPU é a unidade central de processamento — frequentemente comparada ao regente do sistema.' },
+        { q:'8. O que acontece normalmente com os dados na memória RAM quando o computador é desligado?', o:['São impressos','Permanecem para sempre','São enviados à internet','São perdidos'], a:3, e:'A RAM é uma memória volátil: seu conteúdo depende da alimentação elétrica.' },
+        { q:'9. Em uma gravação musical, o microfone funciona principalmente como dispositivo de…', o:['Entrada','Saída','Armazenamento','Processamento central'], a:0, e:'O microfone captura o som e fornece um sinal de entrada ao sistema.' },
+        { q:'10. Uma DAW, usada para gravar e editar áudio, é exemplo de…', o:['Hardware de entrada','Software aplicativo','Memória permanente','Fonte de alimentação'], a:1, e:'Uma DAW é um aplicativo voltado à produção e edição de áudio.' }
+      ];
+      let quizIndex = 0, quizPoints = 0, quizAnswered = false;
+      const quizCard = document.getElementById('quizCard');
+      const renderQuiz = () => {
+        const item = quizData[quizIndex]; quizAnswered = false;
+        document.getElementById('quizCounter').textContent = `Questão ${quizIndex + 1} de ${quizData.length}`;
+        document.getElementById('quizProgress').style.width = `${((quizIndex + 1) / quizData.length) * 100}%`;
+        document.getElementById('quizScore').textContent = `${quizPoints} ${quizPoints === 1 ? 'ponto' : 'pontos'}`;
+        quizCard.innerHTML = `<h3>${item.q}</h3><div class="quiz-options">${item.o.map((x,i)=>`<button class="quiz-option" data-option="${i}"><b>${String.fromCharCode(65+i)}.</b> ${x}</button>`).join('')}</div><div class="quiz-feedback" id="quizFeedback">Escolha uma alternativa.</div><div class="quiz-actions"><button class="primary-btn" id="quizNext" disabled>${quizIndex === quizData.length - 1 ? 'Ver resultado' : 'Próxima questão'} →</button></div>`;
+        quizCard.querySelectorAll('.quiz-option').forEach(btn => btn.addEventListener('click', () => answerQuiz(Number(btn.dataset.option))));
+        document.getElementById('quizNext').addEventListener('click', nextQuiz);
+      };
+      const answerQuiz = choice => {
+        if (quizAnswered) return; quizAnswered = true;
+        const item = quizData[quizIndex]; const correct = choice === item.a;
+        if (correct) quizPoints++;
+        quizCard.querySelectorAll('.quiz-option').forEach((btn,i) => { btn.disabled = true; if (i === item.a) btn.classList.add('correct'); else if (i === choice) btn.classList.add('wrong'); });
+        const fb = document.getElementById('quizFeedback');
+        fb.className = `quiz-feedback ${correct ? 'good' : 'bad'}`;
+        fb.innerHTML = `<b>${correct ? '✓ Correto!' : '✗ Quase!'}</b> ${item.e}`;
+        document.getElementById('quizScore').textContent = `${quizPoints} ${quizPoints === 1 ? 'ponto' : 'pontos'}`;
+        document.getElementById('quizNext').disabled = false;
+      };
+      const nextQuiz = () => {
+        if (!quizAnswered) return;
+        if (quizIndex < quizData.length - 1) { quizIndex++; renderQuiz(); }
+        else showQuizResult();
+      };
+      const showQuizResult = () => {
+        document.getElementById('quizCounter').textContent = 'Quiz concluído';
+        document.getElementById('quizProgress').style.width = '100%';
+        const message = quizPoints >= 9 ? 'Excelente! Você dominou os conceitos.' : quizPoints >= 7 ? 'Muito bom! A base está bem construída.' : quizPoints >= 5 ? 'Bom começo! Revise os pontos que geraram dúvida.' : 'Cada tentativa é parte da aprendizagem. Vamos revisar e tentar novamente!';
+        quizCard.innerHTML = `<div class="result-panel"><div><div class="result-score">${quizPoints}/10</div><h3>${message}</h3><p>Hardware e software trabalham juntos — e agora você já sabe reconhecer o papel de cada um.</p><button class="primary-btn" id="restartQuiz">↻ Refazer o quiz</button></div></div>`;
+        document.getElementById('restartQuiz').addEventListener('click', () => { quizIndex = 0; quizPoints = 0; renderQuiz(); });
+      };
+      renderQuiz();
+      updateChrome();
+    })();
+  </script>
+</body>
+</html>
