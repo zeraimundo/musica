@@ -14,8 +14,8 @@ window.PORTAL_CONFIG = {
   course: "Curso Subsequente de Música",
   institution: "IFPB — Campus João Pessoa",
   professor: "Prof. Raimundo Carvalho",
-  updatedAt: "25 de agosto de 2026",
-  currentId: "google-docs"
+  updatedAt: "31 de agosto de 2026",
+  currentId: "word-365"
 };
 
 window.AULAS = [
@@ -52,12 +52,24 @@ window.AULAS = [
     topics: ["Google Docs", "Nuvem", "Colaboração", "Prática"],
     slideCount: 41,
     icon: "▤",
-    status: "current",
+    status: "published",
     href: "slides/Google_Docs_Aula_Interativa.html"
   },
   {
-    id: "proxima-aula",
+    id: "word-365",
     number: 4,
+    date: "31 ago. 2026",
+    title: "Microsoft Word 365: Recursos Essenciais",
+    description: "Criação, edição, formatação, estilos, imagens, tabelas, referências, revisão, colaboração, acessibilidade e exportação para PDF.",
+    topics: ["Microsoft Word", "Formatação", "Colaboração", "Prática"],
+    slideCount: 54,
+    icon: "W",
+    status: "current",
+    href: "slides/Word_Office_365_Aula_Interativa.html"
+  },
+  {
+    id: "proxima-aula",
+    number: 5,
     date: "Próxima semana",
     title: "Próxima aula",
     description: "O novo material aparecerá aqui assim que estiver pronto, mantendo todo o conteúdo do período em um só lugar.",
