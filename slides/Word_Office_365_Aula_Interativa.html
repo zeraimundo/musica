@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071a36">
+  <meta name="description" content="Aula interativa sobre os recursos essenciais do Microsoft Word no Microsoft 365.">
+  <title>Microsoft Word 365 — Aula Interativa</title>
+  <style>
+    :root{
+      --bg:#050c1c;--panel:#0b1730;--panel2:#102141;--text:#f7fbff;--muted:#b9c8df;
+      --word:#185abd;--word2:#2b7cd3;--cyan:#22d3ee;--violet:#8b5cf6;--green:#22c55e;
+      --yellow:#fbbf24;--red:#ef4444;--line:rgba(255,255,255,.13);--shadow:0 24px 70px rgba(0,0,0,.38);
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Segoe UI",Inter,Arial,sans-serif}
+    button,a{font:inherit}button{color:inherit}
+    .deck{position:relative;width:100%;height:100%;isolation:isolate}
+    .ambient{position:absolute;inset:0;overflow:hidden;z-index:-2;background:
+      radial-gradient(circle at 14% 16%,rgba(34,211,238,.15),transparent 31%),
+      radial-gradient(circle at 84% 76%,rgba(24,90,189,.26),transparent 34%),
+      linear-gradient(135deg,#050b19 0%,#07162e 48%,#071c3c 100%)}
+    .ambient:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent)}
+    .particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--cyan);opacity:.26;animation:float 13s linear infinite}
+    @keyframes float{0%{transform:translateY(105vh) scale(.6)}100%{transform:translateY(-12vh) scale(1.3)}}
+    .topbar{position:absolute;z-index:30;top:0;left:0;right:0;height:64px;display:flex;align-items:center;gap:14px;padding:0 22px;background:rgba(5,12,28,.85);border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+    .brand{display:flex;align-items:center;gap:11px;min-width:225px}.brand strong{font-size:.92rem}.brand small{display:block;color:var(--muted);font-size:.7rem;margin-top:2px}
+    .word-mark{width:40px;height:38px;position:relative;border-radius:6px;background:linear-gradient(145deg,#2b7cd3,#185abd);box-shadow:0 8px 24px rgba(24,90,189,.35)}
+    .word-mark:before{content:"W";position:absolute;left:-5px;top:4px;width:29px;height:30px;display:grid;place-items:center;border-radius:4px;background:#124078;color:white;font:800 17px/1 "Segoe UI";box-shadow:3px 0 12px rgba(0,0,0,.25)}
+    .word-mark:after{content:"";position:absolute;right:6px;top:9px;width:11px;height:2px;background:#c9e1ff;box-shadow:0 6px 0 #c9e1ff,0 12px 0 #c9e1ff;opacity:.95}
+    .progress-wrap{flex:1;display:flex;align-items:center;gap:10px}.progress-track{height:6px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden;flex:1}
+    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--word2),var(--cyan),var(--violet));border-radius:inherit;transition:width .35s ease}
+    .counter{font-variant-numeric:tabular-nums;color:#dbeafe;font-size:.78rem;min-width:52px;text-align:center}.top-actions{display:flex;gap:8px}
+    .icon-btn,.nav-btn,.pill-btn{border:1px solid var(--line);background:rgba(255,255,255,.065);border-radius:12px;cursor:pointer;transition:.2s ease}
+    .icon-btn{height:38px;padding:0 12px;display:flex;align-items:center;gap:7px;font-size:.78rem}.icon-btn:hover,.nav-btn:hover,.pill-btn:hover{background:rgba(255,255,255,.13);transform:translateY(-1px)}
+    .slides{position:absolute;inset:64px 0 72px}.slide{position:absolute;inset:0;padding:clamp(22px,3.6vw,58px) clamp(24px,6vw,104px);opacity:0;visibility:hidden;transform:translateX(42px) scale(.985);transition:opacity .34s ease,transform .34s ease;overflow:auto}
+    .slide.active{opacity:1;visibility:visible;transform:none;z-index:2}.slide::-webkit-scrollbar{width:8px}.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:9px}
+    .slide-inner{width:min(1180px,100%);min-height:100%;margin:auto;display:flex;flex-direction:column;justify-content:center}
+    .eyebrow{display:flex;align-items:center;gap:9px;color:#85eaff;text-transform:uppercase;letter-spacing:.15em;font-weight:800;font-size:.72rem;margin-bottom:12px}.eyebrow:before{content:"";width:28px;height:3px;border-radius:9px;background:linear-gradient(90deg,var(--cyan),var(--word2))}
+    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2.7rem,6.3vw,6.2rem);line-height:.95;letter-spacing:-.055em;margin-bottom:20px}h2{font-size:clamp(2rem,4.3vw,4.45rem);line-height:1.02;letter-spacing:-.042em;margin-bottom:18px}h3{font-size:clamp(1.05rem,1.7vw,1.45rem);margin-bottom:9px;letter-spacing:-.015em}
+    .gradient-text{background:linear-gradient(105deg,#fff 5%,#92efff 45%,#8abdf4 88%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{font-size:clamp(1rem,1.65vw,1.35rem);line-height:1.65;color:var(--muted);max-width:870px}.small{font-size:.82rem;color:var(--muted);line-height:1.55}
+    .note{padding:13px 16px;border-left:4px solid var(--yellow);background:rgba(251,191,36,.09);border-radius:0 12px 12px 0;color:#fff1b8}
+    .grid{display:grid;gap:16px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{position:relative;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border-radius:20px;padding:20px;box-shadow:0 16px 35px rgba(0,0,0,.12);overflow:hidden}.card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--cyan)),transparent);opacity:.8}.card p:last-child{margin-bottom:0}
+    .card-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:color-mix(in srgb,var(--accent,var(--cyan)) 18%,transparent);font-size:1.45rem;margin-bottom:14px;border:1px solid color-mix(in srgb,var(--accent,var(--cyan)) 35%,transparent)}
+    .tag{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:.72rem;color:#dbeafe}.tag.web{border-color:rgba(34,211,238,.4);color:#b9f7ff;background:rgba(34,211,238,.08)}.tag.desktop{border-color:rgba(43,124,211,.5);color:#cce5ff;background:rgba(43,124,211,.11)}.tag.plan{border-color:rgba(251,191,36,.45);color:#ffe99e;background:rgba(251,191,36,.1)}
+    .hero{display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center}.hero-art{min-height:410px;border:1px solid var(--line);border-radius:30px;padding:28px;background:linear-gradient(145deg,rgba(43,124,211,.25),rgba(255,255,255,.045));box-shadow:var(--shadow);display:grid;place-items:center;overflow:hidden}.meta-line{display:flex;flex-wrap:wrap;gap:8px}
+    .teacher{position:absolute;right:28px;bottom:16px;color:rgba(255,255,255,.58);font-size:.7rem;letter-spacing:.04em}
+    .mock-window{border-radius:17px;overflow:hidden;background:#f3f3f3;color:#1f2937;border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 55px rgba(0,0,0,.32)}
+    .mock-title{height:46px;background:#185abd;color:white;display:flex;align-items:center;gap:10px;padding:0 14px}.mini-word{width:25px;height:25px;display:grid;place-items:center;background:#fff;color:#185abd;border-radius:3px;font-weight:900}.mock-name{font-size:.72rem;font-weight:650;flex:1}.mock-status{font-size:.58rem;opacity:.85}.mock-share{border:0;background:#fff;color:#185abd;border-radius:6px;padding:7px 11px;font-weight:750;font-size:.62rem}
+    .mock-menu{height:33px;background:#fff;padding:9px 14px 0;font-size:.56rem;white-space:nowrap;overflow:hidden;border-bottom:1px solid #ddd}.mock-menu span{padding:7px 9px}.mock-menu .on{color:#185abd;border-bottom:2px solid #185abd;font-weight:800}
+    .mock-toolbar{height:45px;background:#fafafa;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:6px;padding:0 12px;white-space:nowrap;overflow:hidden}.mock-toolbar b{padding:5px 7px;border-radius:4px;background:#fff;border:1px solid #e5e7eb;font-size:.56rem}
+    .mock-body{min-height:285px;background:#e9edf3;padding:22px;display:flex}.mock-page{width:72%;min-height:245px;background:#fff;margin:auto;padding:28px 34px;box-shadow:0 2px 8px #b8c0cb;position:relative;font-size:.6rem;line-height:1.65}.mock-page h4{font-size:1.08rem;color:#1f2937;margin:0 0 10px}.line{height:5px;background:#d7dce2;border-radius:9px;margin:7px 0}.line.short{width:65%}.image-block{height:68px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe 52%,#c4b5fd);margin:12px 0}.cursor-label{position:absolute;font-size:.48rem;color:#fff;padding:3px 5px;border-radius:5px;white-space:nowrap}.c1{right:5px;top:72px;background:#8b5cf6}.c2{left:46px;bottom:24px;background:#16a34a}
+    .split{display:grid;grid-template-columns:.92fr 1.08fr;gap:34px;align-items:center}.steps{display:grid;gap:10px;counter-reset:step}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start;padding:13px;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid var(--line)}.step:before{counter-increment:step;content:counter(step);width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--word),var(--violet));font-weight:900}.step p{margin:2px 0 0;color:var(--muted);font-size:.84rem;line-height:1.45}
+    .feature-cloud{display:flex;flex-wrap:wrap;gap:9px}.feature-cloud span{padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.055);font-size:.8rem}
+    .ribbon-tabs,.toolbar-demo,.choice-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.ribbon-tab,.tool,.choice{padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.065);cursor:pointer}.ribbon-tab.active,.tool.active,.choice.selected{background:linear-gradient(135deg,rgba(43,124,211,.38),rgba(139,92,246,.28));border-color:#76b7ff}.ribbon-panel{min-height:120px;padding:16px;border-radius:14px;background:#f8fafc;color:#1f2937;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.ribbon-group{border-right:1px solid #d1d5db;padding:8px}.ribbon-group:last-child{border:0}.ribbon-group strong{display:block;color:#185abd;font-size:.72rem;margin-bottom:8px}.ribbon-group span{font-size:.62rem;color:#4b5563}
+    .demo-paper{min-height:165px;background:#fff;color:#202124;border-radius:13px;padding:24px;box-shadow:0 14px 45px rgba(0,0,0,.24);font-family:Arial,sans-serif;display:grid;place-items:center;text-align:center}.demo-paper span{font-size:1.25rem;transition:.2s}.demo-paragraph{background:#fff;color:#1f2937;border-radius:14px;padding:24px;line-height:1.6;min-height:175px;box-shadow:0 12px 35px rgba(0,0,0,.25)}
+    .page-compare{min-height:235px;border-radius:18px;padding:20px;background:rgba(255,255,255,.055);border:1px solid var(--line);display:grid;place-items:center}.page-visual{background:white;color:#3c4043;border-radius:4px;width:170px;height:220px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:.25s}.page-visual.landscape{width:260px;height:170px}.page-visual.wide-margin{padding:35px}.page-visual h4{font-size:.8rem;margin:0 0 12px}.page-visual p{font-size:.5rem;line-height:1.5}
+    .style-list{display:grid;gap:9px}.style-sample{padding:12px 14px;border-radius:11px;background:#fff;color:#1f2937;border:2px solid transparent;cursor:pointer}.style-sample:hover,.style-sample.selected{border-color:#2b7cd3}.style-sample.title{font-size:1.35rem;font-weight:300}.style-sample.heading{font-size:1.05rem;color:#185abd;font-weight:700}.style-sample.normal{font-size:.78rem}
+    .wrap-demo{display:grid;grid-template-columns:1fr 140px;gap:12px;background:#fff;color:#374151;padding:20px;border-radius:15px;min-height:190px}.wrap-text{font-size:.62rem;line-height:1.7}.wrap-img{height:110px;margin:auto;background:linear-gradient(135deg,#7dd3fc,#60a5fa,#a78bfa);border-radius:9px;box-shadow:0 8px 18px rgba(0,0,0,.18)}.wrap-demo.behind{position:relative;display:block}.wrap-demo.behind .wrap-img{position:absolute;inset:30px auto auto 38%;width:155px;opacity:.5;z-index:0}.wrap-demo.behind .wrap-text{position:relative;z-index:1}.wrap-demo.inline{display:block}.wrap-demo.inline .wrap-img{width:140px;margin:10px auto}
+    .revision{background:#fff;color:#1f2937;border-radius:15px;padding:23px;min-height:180px}.del{text-decoration:line-through;color:#dc2626;background:#fee2e2}.ins{text-decoration:underline;color:#15803d;background:#dcfce7}.comment{margin-top:15px;padding:11px;border-left:4px solid #8b5cf6;background:#f5f3ff;font-size:.72rem}
+    .permission{padding:17px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.05);min-height:120px}.permission.selected{border-color:#76b7ff;background:rgba(43,124,211,.17)}
+    .key-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.key-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.05);font-size:.8rem}.keys{display:flex;gap:4px}.keys kbd{padding:5px 7px;background:#eef2f7;color:#17202f;border-radius:6px;border-bottom:2px solid #aab1bc;font-weight:800;font-size:.66rem}
+    .checklist{display:grid;gap:9px}.check-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.05);cursor:pointer}.check-item input{width:20px;height:20px;accent-color:var(--green)}.check-item.done{opacity:.58;text-decoration:line-through}.scenario{padding:18px;border-radius:18px;background:linear-gradient(135deg,rgba(43,124,211,.2),rgba(139,92,246,.14));border:1px solid rgba(125,176,255,.3)}
+    .quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:22px}.quiz-option{text-align:left;padding:16px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.06);cursor:pointer;transition:.2s}.quiz-option:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}.quiz-option.correct{background:rgba(34,197,94,.2);border-color:#5ed276}.quiz-option.wrong{background:rgba(239,68,68,.2);border-color:#f2847a}.quiz-option:disabled{cursor:default;transform:none}.feedback{min-height:50px;margin-top:15px;padding:12px 15px;border-radius:12px;background:rgba(255,255,255,.05);color:var(--muted);opacity:0;transform:translateY(5px);transition:.2s}.feedback.show{opacity:1;transform:none}
+    .score-ring{width:190px;height:190px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--green) 0deg,var(--green) var(--score-angle,0deg),rgba(255,255,255,.1) var(--score-angle,0deg));position:relative}.score-ring:after{content:"";position:absolute;inset:16px;border-radius:50%;background:#0a1730}.score-ring strong{z-index:1;font-size:2.9rem}.score-ring small{z-index:1;position:absolute;margin-top:58px;color:var(--muted)}
+    .bottom-nav{position:absolute;z-index:30;left:0;right:0;bottom:0;height:72px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 22px;background:rgba(5,12,28,.87);border-top:1px solid var(--line);backdrop-filter:blur(16px)}.nav-btn{height:42px;padding:0 16px;min-width:46px}.nav-btn:disabled{opacity:.32;cursor:not-allowed;transform:none}.nav-title{width:min(460px,45vw);text-align:center}.nav-title strong{display:block;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-title small{font-size:.67rem;color:var(--muted)}
+    .overlay{position:absolute;z-index:100;inset:0;background:rgba(2,7,18,.9);backdrop-filter:blur(16px);display:none;padding:40px}.overlay.open{display:grid;place-items:center}.modal{width:min(1080px,100%);max-height:86vh;overflow:auto;background:#0b1730;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-head h3{margin:0}.close{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);cursor:pointer}.overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.thumb{text-align:left;min-height:92px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.05);cursor:pointer}.thumb:hover,.thumb.current{border-color:#6eb5ff;background:rgba(43,124,211,.17)}.thumb span{display:block;color:var(--cyan);font-size:.65rem;margin-bottom:7px}.thumb strong{font-size:.76rem;line-height:1.25}.source-list{display:grid;gap:8px}.source-list a{color:#a5eaff;text-decoration:none;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid var(--line);font-size:.78rem}.source-list a:hover{text-decoration:underline;background:rgba(255,255,255,.08)}.help-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.help-item{padding:13px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);font-size:.8rem}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media(max-width:900px){.topbar{padding:0 10px}.brand{min-width:0}.brand div:last-child{display:none}.icon-btn span{display:none}.icon-btn{padding:0 10px}.slide{padding:24px}.hero,.split{grid-template-columns:1fr}.hero-art{min-height:260px}.grid.three,.grid.four{grid-template-columns:repeat(2,1fr)}.overview-grid{grid-template-columns:repeat(2,1fr)}.key-grid{grid-template-columns:repeat(2,1fr)}.ribbon-panel{grid-template-columns:repeat(2,1fr)}.hero .hero-art{display:none}}
+    @media(max-width:600px){.grid.two,.grid.three,.grid.four,.quiz-options,.help-grid{grid-template-columns:1fr}.slide{padding:20px 16px}.topbar{height:58px}.slides{inset:58px 0 64px}.bottom-nav{height:64px}.progress-wrap{gap:5px}.counter{font-size:.65rem;min-width:39px}.top-actions .icon-btn:nth-child(2),.top-actions .icon-btn:nth-child(3){display:none}.key-grid{grid-template-columns:1fr}.overlay{padding:12px}.modal{padding:16px}.overview-grid{grid-template-columns:1fr 1fr}.teacher{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    @media print{.topbar,.bottom-nav,.ambient{display:none}.deck,.slides{position:static;height:auto;overflow:visible}.slide{position:relative;inset:auto;display:block;opacity:1;visibility:visible;transform:none;page-break-after:always;height:100vh;background:#07162e}.slide-inner{height:100%}}
+  </style>
+</head>
+<body>
+<main class="deck" id="deck">
+  <div class="ambient" id="ambient" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand"><div class="word-mark" aria-hidden="true"></div><div><strong>Microsoft Word 365</strong><small>Aula interativa</small></div></div>
+    <div class="progress-wrap"><div class="progress-track" aria-label="Progresso da apresentação"><div class="progress-bar" id="progressBar"></div></div><div class="counter" id="counter">1 / 54</div></div>
+    <div class="top-actions">
+      <button class="icon-btn" data-open="overview" title="Visão geral"><b>▦</b><span>Visão geral</span></button>
+      <button class="icon-btn" data-open="sources" title="Fontes"><b>↗</b><span>Fontes</span></button>
+      <button class="icon-btn" data-open="help" title="Ajuda"><b>?</b><span>Ajuda</span></button>
+      <button class="icon-btn" id="fullscreenBtn" title="Tela cheia"><b>⛶</b><span>Tela cheia</span></button>
+    </div>
+  </header>
+  <section class="slides" id="slides" aria-live="polite">
+    <article class="slide active" data-title="Word 365: do primeiro texto ao documento profissional">
+      <div class="slide-inner hero">
+        <div><div class="eyebrow">Informática Básica • Curso de Música</div><h1 class="gradient-text">Microsoft Word 365</h1>
+          <p class="lead">Crie, organize, revise e compartilhe documentos com clareza — do primeiro parágrafo ao trabalho completo.</p>
+          <div class="meta-line"><span class="tag desktop">▣ Aplicativo</span><span class="tag web">☁ Word para a Web</span><span class="tag">⌨ Prática guiada</span><span class="tag">✓ Quiz interativo</span></div>
+        </div>
+        <div class="hero-art">
+          <div class="mock-window" style="width:100%">
+            <div class="mock-title"><div class="mini-word">W</div><div class="mock-name">Minha primeira composição.docx</div><div class="mock-status">✓ Salvo no OneDrive</div><button class="mock-share">Compartilhar</button></div>
+            <div class="mock-menu"><span>Arquivo</span><span class="on">Página Inicial</span><span>Inserir</span><span>Layout</span><span>Revisão</span></div>
+            <div class="mock-toolbar"><b>↶</b><b>↷</b><b>Calibri</b><b>12</b><b>B</b><b><i>I</i></b><b><u>U</u></b><b>≡</b></div>
+            <div class="mock-body"><div class="mock-page"><h4>Canção e tecnologia</h4><div class="line"></div><div class="line"></div><div class="line short"></div><div class="image-block"></div><div class="line"></div></div></div>
+          </div>
+        </div>
+      </div><div class="teacher">Prof. Raimundo Carvalho • IFPB</div>
+    </article>
+
+    <article class="slide" data-title="Nossa rota de aprendizagem"><div class="slide-inner"><div class="eyebrow">Visão geral</div><h2 class="gradient-text">Nossa rota de aprendizagem</h2>
+      <div class="grid four">
+        <div class="card" style="--accent:#2b7cd3"><div class="card-icon">✍</div><h3>1. Criar</h3><p class="small">Abrir, salvar, digitar, selecionar e formatar.</p></div>
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">▦</div><h3>2. Organizar</h3><p class="small">Páginas, estilos, tabelas, imagens e referências.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">👥</div><h3>3. Revisar</h3><p class="small">Editor, comentários, alterações e colaboração.</p></div>
+        <div class="card" style="--accent:#22c55e"><div class="card-icon">✓</div><h3>4. Entregar</h3><p class="small">Acessibilidade, proteção, impressão e PDF.</p></div>
+      </div><p class="note" style="margin-top:18px">Objetivo: produzir um documento bem estruturado, acessível e pronto para compartilhar ou imprimir.</p>
+    </div></article>
+
+    <article class="slide" data-title="O que é o Microsoft Word?"><div class="slide-inner split">
+      <div><div class="eyebrow">Conceito</div><h2 class="gradient-text">Muito além de “digitar texto”</h2><p class="lead">O Word é o editor de textos do Microsoft 365. Ele combina criação, diagramação, revisão, referências acadêmicas, colaboração e publicação.</p>
+        <div class="feature-cloud"><span>Trabalhos</span><span>Currículos</span><span>Cartas</span><span>Atas</span><span>Relatórios</span><span>Partituras comentadas</span><span>Contratos</span><span>Etiquetas</span></div>
+      </div>
+      <div class="grid two">
+        <div class="card" style="--accent:#2b7cd3"><div class="card-icon">📝</div><h3>Conteúdo</h3><p class="small">Texto, imagens, tabelas, gráficos, equações e multimídia.</p></div>
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">🎨</div><h3>Aparência</h3><p class="small">Fontes, estilos, temas, margens, colunas e páginas.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">🔎</div><h3>Qualidade</h3><p class="small">Ortografia, gramática, acessibilidade e referências.</p></div>
+        <div class="card" style="--accent:#22c55e"><div class="card-icon">☁</div><h3>Colaboração</h3><p class="small">Compartilhamento, coautoria, comentários e versões.</p></div>
+      </div>
+    </div></article>
+
+    <article class="slide" data-title="Word no computador, na Web e no celular"><div class="slide-inner"><div class="eyebrow">Versões</div><h2 class="gradient-text">Qual Word você está usando?</h2>
+      <div class="grid three">
+        <div class="card" style="--accent:#2b7cd3"><span class="tag desktop">Mais completo</span><h3 style="margin-top:14px">Word para desktop</h3><p class="small">Funciona offline e oferece recursos avançados como macros, mala direta completa, comparação de documentos, objetos incorporados e diagramação mais detalhada.</p></div>
+        <div class="card" style="--accent:#22d3ee"><span class="tag web">No navegador</span><h3 style="margin-top:14px">Word para a Web</h3><p class="small">Excelente para criar, editar e colaborar. Tem salvamento automático, comentários, histórico e muitos recursos essenciais, mas não todos os recursos do aplicativo.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><span class="tag">Mobilidade</span><h3 style="margin-top:14px">Aplicativo móvel</h3><p class="small">Útil para ler, revisar e fazer edições rápidas. A tela menor limita tarefas de diagramação complexa.</p></div>
+      </div><p class="note" style="margin-top:18px"><strong>Regra prática:</strong> colaboração rápida na Web; acabamento e recursos avançados no aplicativo para computador.</p>
+    </div></article>
+
+    <article class="slide" data-title="Criar um documento"><div class="slide-inner"><div class="eyebrow">Primeiros passos</div><h2 class="gradient-text">Do modelo ao documento em branco</h2>
+      <div class="grid two">
+        <div class="steps">
+          <div class="step"><div><h3>Abra o Word</h3><p>Pelo menu Iniciar, Microsoft365.com ou aplicativo móvel.</p></div></div>
+          <div class="step"><div><h3>Escolha um ponto de partida</h3><p>Documento em branco ou modelo de currículo, relatório, carta, calendário e outros.</p></div></div>
+          <div class="step"><div><h3>Dê um nome claro</h3><p>Exemplo: <strong>Musica_Turma_Atividade_01.docx</strong>.</p></div></div>
+          <div class="step"><div><h3>Defina onde salvar</h3><p>OneDrive para sincronizar e colaborar; pasta local para uso offline.</p></div></div>
+        </div>
+        <div class="card" style="--accent:#fbbf24"><div class="card-icon">💡</div><h3>Modelos economizam tempo</h3><p class="lead" style="font-size:1.02rem">Eles já trazem cores, estilos, espaços e estrutura visual. Substitua o conteúdo sem destruir a formatação.</p><div class="note">Antes de editar, observe quais trechos são títulos, subtítulos, textos e imagens de exemplo.</div></div>
+      </div>
+    </div></article>
+
+    <article class="slide" data-title="Conhecendo a interface e a Faixa de Opções"><div class="slide-inner"><div class="eyebrow">Interface</div><h2 class="gradient-text">A Faixa de Opções organiza as ferramentas</h2>
+      <div class="mock-window">
+        <div class="mock-title"><div class="mini-word">W</div><div class="mock-name">① Nome e salvamento</div><div class="mock-status">② Pesquisa</div><button class="mock-share">⑥ Compartilhar</button></div>
+        <div class="mock-menu"><span>Arquivo</span><span class="on">③ Página Inicial</span><span>Inserir</span><span>Layout</span><span>Referências</span><span>Revisão</span><span>Exibir</span></div>
+        <div class="mock-toolbar"><b>④ Colar</b><b>Fonte</b><b>Tamanho</b><b>B</b><b>I</b><b>U</b><b>Alinhar</b><b>Estilos</b></div>
+        <div class="mock-body"><div class="mock-page"><h4>⑤ Área de edição</h4><div class="line"></div><div class="line"></div><div class="line short"></div><div class="image-block"></div></div></div>
+      </div>
+      <div class="ribbon-tabs"><button class="ribbon-tab active" data-ribbon="inicio">Página Inicial</button><button class="ribbon-tab" data-ribbon="inserir">Inserir</button><button class="ribbon-tab" data-ribbon="layout">Layout</button><button class="ribbon-tab" data-ribbon="revisao">Revisão</button></div>
+      <div class="ribbon-panel" id="ribbonPanel"><div class="ribbon-group"><strong>Área de transferência</strong><span>Colar, recortar e copiar.</span></div><div class="ribbon-group"><strong>Fonte</strong><span>Tipo, tamanho, cor e destaque.</span></div><div class="ribbon-group"><strong>Parágrafo</strong><span>Alinhamento, listas e espaçamento.</span></div><div class="ribbon-group"><strong>Estilos</strong><span>Estrutura e consistência.</span></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Salvar, AutoSave e formatos de arquivo"><div class="slide-inner split">
+      <div><div class="eyebrow">Arquivos</div><h2 class="gradient-text">Salvar é proteger o seu trabalho</h2><p class="lead">No OneDrive ou SharePoint, o Salvamento Automático pode registrar as mudanças continuamente. Em arquivos locais, use <strong>Ctrl + S</strong> com frequência.</p>
+        <div class="grid two"><div class="card" style="--accent:#22c55e"><h3>Salvar</h3><p class="small">Atualiza o arquivo atual.</p></div><div class="card" style="--accent:#22d3ee"><h3>Salvar como</h3><p class="small">Cria outra cópia, nome, local ou formato.</p></div></div>
+      </div>
+      <div class="card"><h3>Formatos importantes</h3><div class="feature-cloud"><span><b>.docx</b> documento padrão</span><span><b>.pdf</b> leitura/entrega</span><span><b>.dotx</b> modelo</span><span><b>.docm</b> com macros</span><span><b>.odt</b> formato aberto</span><span><b>.rtf</b> texto formatado</span><span><b>.txt</b> texto simples</span></div><p class="note" style="margin-top:16px">Use PDF para preservar o layout. Guarde também o DOCX quando outras pessoas precisarem editar.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Modos de exibição, zoom e régua"><div class="slide-inner"><div class="eyebrow">Exibir</div><h2 class="gradient-text">Veja o documento da forma certa para cada tarefa</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">▤</div><h3>Layout de Impressão</h3><p class="small">Mostra páginas, margens, cabeçalhos e quebras como serão impressos.</p></div>
+        <div class="card"><div class="card-icon">▥</div><h3>Layout da Web</h3><p class="small">Exibe o conteúdo como uma página contínua.</p></div>
+        <div class="card"><div class="card-icon">☷</div><h3>Modo de Leitura</h3><p class="small">Reduz distrações e prioriza a leitura.</p></div>
+        <div class="card"><div class="card-icon">⌕</div><h3>Zoom</h3><p class="small">Aproxima ou afasta sem alterar a impressão.</p></div>
+      </div><div class="grid two" style="margin-top:16px"><div class="card"><h3>Régua</h3><p class="small">Controla recuos, tabulações e posição do texto.</p></div><div class="card"><h3>Painel de Navegação</h3><p class="small">Localiza títulos, páginas e resultados de pesquisa rapidamente.</p></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Digitar, selecionar e mover-se no texto"><div class="slide-inner"><div class="eyebrow">Edição básica</div><h2 class="gradient-text">O cursor indica onde a próxima ação acontecerá</h2>
+      <div class="grid three">
+        <div class="card" style="--accent:#2b7cd3"><div class="card-icon">│</div><h3>Inserção</h3><p class="small">Clique no ponto desejado e digite. <strong>Enter</strong> inicia outro parágrafo; <strong>Shift + Enter</strong> apenas quebra a linha.</p></div>
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">▰</div><h3>Seleção</h3><p class="small">Arraste para selecionar; duplo clique seleciona uma palavra; triplo clique costuma selecionar o parágrafo.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">↔</div><h3>Navegação</h3><p class="small">Use setas; <strong>Ctrl + ←/→</strong> salta palavras; <strong>Ctrl + Home/End</strong> vai ao início/fim.</p></div>
+      </div><p class="note" style="margin-top:18px">Formatação e comandos agem sobre o que está selecionado. Sem seleção, valem para o que será digitado dali em diante.</p>
+    </div></article>
+
+    <article class="slide" data-title="Copiar, recortar, colar e desfazer"><div class="slide-inner"><div class="eyebrow">Área de transferência</div><h2 class="gradient-text">Reutilize conteúdo sem redigitar</h2>
+      <div class="grid four">
+        <div class="card" style="--accent:#2b7cd3"><div class="card-icon">⧉</div><h3>Copiar</h3><p class="small"><strong>Ctrl + C</strong> mantém o original e cria uma cópia temporária.</p></div>
+        <div class="card" style="--accent:#fbbf24"><div class="card-icon">✂</div><h3>Recortar</h3><p class="small"><strong>Ctrl + X</strong> remove do local e prepara para mover.</p></div>
+        <div class="card" style="--accent:#22c55e"><div class="card-icon">▣</div><h3>Colar</h3><p class="small"><strong>Ctrl + V</strong> insere. Escolha manter formatação, mesclar ou somente texto.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">↶</div><h3>Desfazer</h3><p class="small"><strong>Ctrl + Z</strong> volta uma ação; <strong>Ctrl + Y</strong> refaz.</p></div>
+      </div><p class="note" style="margin-top:18px"><strong>Colar somente texto</strong> evita fontes, cores e espaços indesejados vindos de sites.</p>
+    </div></article>
+
+    <article class="slide" data-title="Localizar, substituir e navegar"><div class="slide-inner split">
+      <div><div class="eyebrow">Produtividade</div><h2 class="gradient-text">Encontre em segundos</h2><div class="steps">
+        <div class="step"><div><h3>Localizar — Ctrl + F</h3><p>Procura palavras ou trechos e abre o painel de navegação.</p></div></div>
+        <div class="step"><div><h3>Substituir — Ctrl + H</h3><p>Troca uma ocorrência ou todas, com atenção a maiúsculas e palavras inteiras.</p></div></div>
+        <div class="step"><div><h3>Ir para — Ctrl + G</h3><p>Salta para página, seção, linha, nota ou marcador.</p></div></div>
+      </div></div>
+      <div class="card" style="--accent:#ef4444"><h3>Cuidado com “Substituir tudo”</h3><p class="lead" style="font-size:1.05rem">Trocar “som” por “música” pode alterar partes de palavras inesperadas.</p><div class="note">Revise o resultado ou substitua uma ocorrência de cada vez quando houver dúvida.</div></div>
+    </div></article>
+
+    <article class="slide" data-title="Formatando caracteres"><div class="slide-inner split">
+      <div><div class="eyebrow">Página Inicial • Fonte</div><h2 class="gradient-text">Formatação dá hierarquia ao texto</h2>
+        <div class="toolbar-demo"><button class="tool" data-format="bold"><b>B</b></button><button class="tool" data-format="italic"><i>I</i></button><button class="tool" data-format="underline"><u>U</u></button><button class="tool" data-format="color">Cor</button></div>
+        <div class="demo-paper"><span id="formatText">Selecione uma formatação</span></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><h3>Fonte e tamanho</h3><p class="small">Escolha legibilidade antes de decoração. Texto longo costuma funcionar entre 10 e 12 pt.</p></div>
+        <div class="card"><h3>Negrito e itálico</h3><p class="small">Use para ênfase. Excesso elimina o destaque.</p></div>
+        <div class="card"><h3>Cor e realce</h3><p class="small">Mantenha contraste suficiente e evite depender apenas da cor.</p></div>
+        <div class="card"><h3>Limpar formatação</h3><p class="small">Remove estilos manuais indesejados de um trecho.</p></div>
+      </div>
+    </div></article>
+
+    <article class="slide" data-title="Formatando parágrafos"><div class="slide-inner split">
+      <div><div class="eyebrow">Página Inicial • Parágrafo</div><h2 class="gradient-text">Parágrafos organizam a leitura</h2>
+        <div class="toolbar-demo"><button class="tool active" data-align="left">Esquerda</button><button class="tool" data-align="center">Centro</button><button class="tool" data-align="right">Direita</button><button class="tool" data-align="justify">Justificar</button></div>
+        <div class="demo-paragraph" id="paragraphDemo">A música registra memórias, culturas e experiências. Um parágrafo bem formatado facilita a leitura e torna a mensagem mais clara para diferentes públicos.</div>
+      </div>
+      <div class="card"><h3>Controles essenciais</h3><div class="feature-cloud"><span>Alinhamento</span><span>Recuo</span><span>Espaçamento entre linhas</span><span>Espaço antes/depois</span><span>Bordas</span><span>Sombreamento</span><span>Tabulação</span><span>Mostrar ¶</span></div><p class="note" style="margin-top:15px">Evite apertar Enter várias vezes para criar espaço. Use as opções de espaçamento do parágrafo.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Listas com marcadores e numeração"><div class="slide-inner"><div class="eyebrow">Organização</div><h2 class="gradient-text">Listas tornam informações escaneáveis</h2>
+      <div class="grid three">
+        <div class="card" style="--accent:#22d3ee"><h3>• Marcadores</h3><p class="small">Itens sem ordem obrigatória: instrumentos, materiais ou ideias.</p><ul class="small"><li>Violão</li><li>Teclado</li><li>Percussão</li></ul></div>
+        <div class="card" style="--accent:#2b7cd3"><h3>1. Numeração</h3><p class="small">Etapas, prioridades ou sequências.</p><ol class="small"><li>Planejar</li><li>Produzir</li><li>Revisar</li></ol></div>
+        <div class="card" style="--accent:#8b5cf6"><h3>1.1 Multinível</h3><p class="small">Capítulos, subtópicos e estruturas hierárquicas. Combine com Estilos de Título.</p></div>
+      </div><p class="note" style="margin-top:18px"><strong>Tab</strong> pode rebaixar um item; <strong>Shift + Tab</strong> promove. Use com moderação para não criar hierarquias confusas.</p>
+    </div></article>
+
+    <article class="slide" data-title="Estilos: o segredo dos documentos consistentes"><div class="slide-inner split">
+      <div><div class="eyebrow">Estrutura</div><h2 class="gradient-text">Não formate cada título “na mão”</h2><p class="lead">Estilos aplicam conjuntos de formatação e dão significado estrutural ao documento.</p>
+        <div class="style-list"><button class="style-sample title">Título</button><button class="style-sample heading">Título 1 — Capítulo</button><button class="style-sample heading" style="font-size:.9rem">Título 2 — Seção</button><button class="style-sample normal">Normal — corpo do texto</button></div>
+      </div>
+      <div class="grid two"><div class="card"><h3>Consistência</h3><p class="small">Altere o estilo uma vez e atualize todos os trechos ligados a ele.</p></div><div class="card"><h3>Navegação</h3><p class="small">Os títulos aparecem no painel de navegação.</p></div><div class="card"><h3>Sumário</h3><p class="small">O Word usa os níveis de título para montar o sumário automático.</p></div><div class="card"><h3>Acessibilidade</h3><p class="small">Leitores de tela entendem melhor a estrutura.</p></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Temas, cores e design"><div class="slide-inner"><div class="eyebrow">Design</div><h2 class="gradient-text">Uma identidade visual para o documento inteiro</h2>
+      <div class="grid four"><div class="card"><div class="card-icon">Aa</div><h3>Fontes do tema</h3><p class="small">Par coerente para títulos e corpo.</p></div><div class="card"><div class="card-icon">●</div><h3>Cores do tema</h3><p class="small">Paleta reutilizada em texto, formas e gráficos.</p></div><div class="card"><div class="card-icon">✦</div><h3>Efeitos</h3><p class="small">Aparência de formas e elementos gráficos.</p></div><div class="card"><div class="card-icon">▤</div><h3>Conjunto de estilos</h3><p class="small">Combinações prontas para hierarquia tipográfica.</p></div></div>
+      <p class="note" style="margin-top:18px">Escolha um visual coerente com a finalidade: relatório acadêmico pede sobriedade; convite artístico pode explorar mais cor e expressão.</p>
+    </div></article>
+
+    <article class="slide" data-title="Configuração de página"><div class="slide-inner split">
+      <div><div class="eyebrow">Layout</div><h2 class="gradient-text">A página é parte da mensagem</h2>
+        <div class="choice-row"><button class="choice" data-page="landscape">Alternar orientação</button><button class="choice" data-page="margin">Alternar margens</button></div>
+        <div class="page-compare"><div class="page-visual" id="pageVisual"><h4>Relatório</h4><p>Margens definem o espaço útil. A orientação pode ser retrato ou paisagem.</p><div class="line"></div><div class="line short"></div></div></div>
+      </div>
+      <div class="grid two"><div class="card"><h3>Margens</h3><p class="small">Espaço entre o conteúdo e as bordas.</p></div><div class="card"><h3>Orientação</h3><p class="small">Retrato para textos; paisagem para tabelas largas.</p></div><div class="card"><h3>Tamanho</h3><p class="small">A4 é o padrão mais comum no Brasil.</p></div><div class="card"><h3>Colunas</h3><p class="small">Organizam boletins, jornais e letras lado a lado.</p></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Quebras de página e de seção"><div class="slide-inner"><div class="eyebrow">Layout • Controle</div><h2 class="gradient-text">Uma quebra é diferente de vários Enters</h2>
+      <div class="grid two">
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">⇣</div><h3>Quebra de página</h3><p class="small">Inicia a próxima página sem depender do conteúdo anterior. Atalho: <strong>Ctrl + Enter</strong>.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">§</div><h3>Quebra de seção</h3><p class="small">Permite mudar orientação, margens, colunas, numeração, cabeçalho ou rodapé apenas em parte do documento.</p></div>
+      </div><div class="scenario" style="margin-top:18px"><h3>Exemplo</h3><p class="small">Seu relatório está em retrato, mas uma tabela precisa ficar em paisagem. Crie uma seção antes e outra depois da tabela; altere somente a seção intermediária.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Cabeçalho, rodapé e número de página"><div class="slide-inner split">
+      <div><div class="eyebrow">Inserir</div><h2 class="gradient-text">Informações que se repetem</h2><p class="lead">Cabeçalhos e rodapés podem exibir nome, curso, capítulo, data, logotipo e numeração.</p>
+        <div class="feature-cloud"><span>Primeira página diferente</span><span>Pares e ímpares diferentes</span><span>Número de página</span><span>Data e hora</span><span>Campos automáticos</span></div>
+      </div>
+      <div class="page-compare"><div class="page-visual" style="width:220px;height:275px"><div style="font-size:.5rem;color:#185abd;border-bottom:1px solid #9ca3af;padding-bottom:5px">Informática Básica — Música</div><h4 style="margin-top:25px">Relatório de atividade</h4><p>Conteúdo do documento...</p><div style="position:absolute;bottom:13px;left:0;right:0;text-align:center;font-size:.55rem;border-top:1px solid #9ca3af;padding-top:5px">Página 1</div></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Capa, marca d’água, bordas e cor da página"><div class="slide-inner"><div class="eyebrow">Design • Página</div><h2 class="gradient-text">Recursos visuais com propósito</h2>
+      <div class="grid four"><div class="card"><div class="card-icon">▣</div><h3>Folha de rosto</h3><p class="small">Modelos de capa com título, autor, data e organização.</p></div><div class="card"><div class="card-icon">A</div><h3>Marca d’água</h3><p class="small">“Rascunho”, “Confidencial” ou identidade visual ao fundo.</p></div><div class="card"><div class="card-icon">□</div><h3>Bordas</h3><p class="small">Molduras para certificados, convites ou páginas especiais.</p></div><div class="card"><div class="card-icon">◐</div><h3>Cor da página</h3><p class="small">Use contraste alto e considere a impressão.</p></div></div>
+      <p class="note" style="margin-top:18px">Em documentos acadêmicos e administrativos, prefira simplicidade e observe as normas da instituição.</p>
+    </div></article>
+
+    <article class="slide" data-title="Tabelas"><div class="slide-inner split">
+      <div><div class="eyebrow">Inserir • Tabela</div><h2 class="gradient-text">Dados alinhados em linhas e colunas</h2><div class="steps"><div class="step"><div><h3>Insira a grade</h3><p>Escolha a quantidade de linhas e colunas.</p></div></div><div class="step"><div><h3>Use cabeçalhos</h3><p>Nomeie cada coluna e repita o cabeçalho em páginas longas.</p></div></div><div class="step"><div><h3>Ajuste e ordene</h3><p>Distribua largura, alinhe conteúdo e aplique estilo legível.</p></div></div></div></div>
+      <div class="card"><table style="width:100%;border-collapse:collapse;font-size:.8rem"><thead><tr style="background:#185abd"><th style="padding:10px;border:1px solid #6b9bd5">Instrumento</th><th style="padding:10px;border:1px solid #6b9bd5">Quantidade</th><th style="padding:10px;border:1px solid #6b9bd5">Estado</th></tr></thead><tbody><tr><td style="padding:10px;border:1px solid #51627a">Violão</td><td style="padding:10px;border:1px solid #51627a">8</td><td style="padding:10px;border:1px solid #51627a">Bom</td></tr><tr><td style="padding:10px;border:1px solid #51627a">Teclado</td><td style="padding:10px;border:1px solid #51627a">3</td><td style="padding:10px;border:1px solid #51627a">Revisar</td></tr></tbody></table><p class="note" style="margin-top:15px">Evite usar tabelas apenas para “empurrar” conteúdo na página. Para isso, prefira layout e alinhamento.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Imagens e capturas de tela"><div class="slide-inner"><div class="eyebrow">Inserir • Ilustrações</div><h2 class="gradient-text">Imagens explicam o que o texto demora a mostrar</h2>
+      <div class="grid three">
+        <div class="card"><div class="image-block"></div><h3>Inserir</h3><p class="small">Do dispositivo, banco de imagens, câmera, área de transferência ou captura de tela, conforme a versão.</p></div>
+        <div class="card"><div class="card-icon">✂</div><h3>Editar</h3><p class="small">Cortar, redimensionar, girar, remover fundo, aplicar correções, cor e efeitos.</p></div>
+        <div class="card"><div class="card-icon">♿</div><h3>Texto alternativo</h3><p class="small">Descreva a informação importante para quem usa leitor de tela.</p></div>
+      </div><p class="note" style="margin-top:18px">Redimensione pelas alças dos cantos para preservar a proporção. Comprima imagens quando o arquivo ficar pesado.</p>
+    </div></article>
+
+    <article class="slide" data-title="Quebra de texto e posição da imagem"><div class="slide-inner split">
+      <div><div class="eyebrow">Layout da imagem</div><h2 class="gradient-text">Como o texto encontra a imagem?</h2>
+        <div class="choice-row"><button class="choice selected" data-wrap="">Quadrado</button><button class="choice" data-wrap="inline">Em linha</button><button class="choice" data-wrap="behind">Atrás do texto</button></div>
+        <div class="wrap-demo" id="wrapDemo"><div class="wrap-text">Uma imagem pode ficar em linha como um grande caractere ou flutuar com o texto ao redor. A escolha deve facilitar a leitura e manter o documento estável quando o texto mudar.</div><div class="wrap-img"></div></div>
+      </div>
+      <div class="grid two"><div class="card"><h3>Em linha</h3><p class="small">Mais previsível; move-se com o parágrafo.</p></div><div class="card"><h3>Quadrado/Próximo</h3><p class="small">O texto contorna a imagem.</p></div><div class="card"><h3>Frente/Atrás</h3><p class="small">Útil em composições, mas pode prejudicar leitura.</p></div><div class="card"><h3>Fixar posição</h3><p class="small">Mantém a imagem na página; use âncora com atenção.</p></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Formas, caixas de texto, ícones, SmartArt e gráficos"><div class="slide-inner"><div class="eyebrow">Inserir • Elementos visuais</div><h2 class="gradient-text">Escolha o objeto adequado</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">○□→</div><h3>Formas</h3><p class="small">Setas, fluxos, destaques e diagramas simples.</p></div>
+        <div class="card"><div class="card-icon">T</div><h3>Caixa de texto e WordArt</h3><p class="small">Texto livre para cartazes, chamadas e composições.</p></div>
+        <div class="card"><div class="card-icon">▧</div><h3>SmartArt e ícones</h3><p class="small">Processos, hierarquias e conceitos visuais. Disponibilidade varia.</p></div>
+        <div class="card"><div class="card-icon">▥</div><h3>Gráficos</h3><p class="small">Colunas, linhas, setores e outros, com dados editáveis.</p></div>
+      </div><p class="note" style="margin-top:18px">Se a informação é uma relação numérica, use gráfico; se é comparação exata, use tabela; se é fluxo, use formas ou SmartArt.</p>
+    </div></article>
+
+    <article class="slide" data-title="Links, indicadores e referências internas"><div class="slide-inner"><div class="eyebrow">Navegação</div><h2 class="gradient-text">Documentos também podem ser navegáveis</h2>
+      <div class="grid three"><div class="card" style="--accent:#22d3ee"><div class="card-icon">🔗</div><h3>Hiperlink — Ctrl + K</h3><p class="small">Liga texto ou imagem a site, email, arquivo ou local do documento.</p></div><div class="card" style="--accent:#8b5cf6"><div class="card-icon">🔖</div><h3>Indicador</h3><p class="small">Marca um ponto específico para voltar rapidamente.</p></div><div class="card" style="--accent:#2b7cd3"><div class="card-icon">↗</div><h3>Referência cruzada</h3><p class="small">Aponta para título, figura, tabela ou nota e pode atualizar a numeração.</p></div></div>
+      <p class="note" style="margin-top:18px">Use textos de link descritivos: “consulte o regulamento do curso” é melhor que “clique aqui”.</p>
+    </div></article>
+
+    <article class="slide" data-title="Símbolos, caracteres especiais e equações"><div class="slide-inner split">
+      <div><div class="eyebrow">Inserir</div><h2 class="gradient-text">Quando o teclado não tem o caractere</h2><p class="lead">O Word inclui símbolos, caracteres especiais e um editor de equações.</p>
+        <div class="feature-cloud"><span>© direitos autorais</span><span>° grau</span><span>€ moeda</span><span>♪ música</span><span>α grego</span><span>→ seta</span><span>½ fração</span></div>
+      </div>
+      <div class="card" style="--accent:#22d3ee;text-align:center"><div style="font:2rem Cambria Math,serif;padding:25px;background:#fff;color:#1f2937;border-radius:12px">f(x) = ∫<sub>a</sub><sup>b</sup> x² dx</div><h3 style="margin-top:16px">Editor de equações</h3><p class="small">Constrói frações, raízes, integrais, matrizes e notação científica com estrutura correta.</p></div>
+    </div></article>
+    <article class="slide" data-title="Editor: ortografia, gramática e estilo"><div class="slide-inner split">
+      <div><div class="eyebrow">Revisão</div><h2 class="gradient-text">O Word ajuda, mas você decide</h2><p class="lead">O Editor identifica possíveis problemas de ortografia, gramática, clareza, concisão e estilo, conforme idioma e versão.</p>
+        <div class="feature-cloud"><span>Ortografia</span><span>Gramática</span><span>Clareza</span><span>Formalidade</span><span>Vocabulário</span><span>Pontuação</span><span>Similaridade*</span></div>
+      </div>
+      <div class="card"><div class="revision"><p>A <span style="text-decoration:underline wavy #ef4444">musíca</span> faz parte da nossa cultura.</p><div class="comment"><strong>Sugestão:</strong> música<br><span style="color:#6b7280">Verifique a grafia e o contexto antes de aceitar.</span></div></div><p class="note" style="margin-top:14px">Nomes próprios, termos técnicos e variações regionais podem ser marcados mesmo estando corretos.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Dicionário, sinônimos, tradução e contagem"><div class="slide-inner"><div class="eyebrow">Ferramentas de escrita</div><h2 class="gradient-text">Aprimore o texto sem perder sua voz</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">📖</div><h3>Dicionário</h3><p class="small">Verifica grafia e permite adicionar termos reconhecidos.</p></div>
+        <div class="card"><div class="card-icon">Aa</div><h3>Sinônimos</h3><p class="small">Evita repetições e amplia o vocabulário com contexto.</p></div>
+        <div class="card"><div class="card-icon">文</div><h3>Traduzir</h3><p class="small">Traduz seleção ou documento. Sempre revise nomes e sentido.</p></div>
+        <div class="card"><div class="card-icon">123</div><h3>Contagem</h3><p class="small">Mostra páginas, palavras e caracteres; pode incluir notas.</p></div>
+      </div><p class="note" style="margin-top:18px">Uma sugestão automática não entende totalmente a intenção. Leia a frase inteira antes de substituir.</p>
+    </div></article>
+
+    <article class="slide" data-title="Ditado, transcrição e leitura em voz alta"><div class="slide-inner"><div class="eyebrow">Voz e leitura</div><h2 class="gradient-text">Ouça e produza de outras formas</h2>
+      <div class="grid three">
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">🎙</div><h3>Ditar</h3><p class="small">Converte fala em texto e pode reconhecer comandos de pontuação. Requer microfone e, em geral, conexão.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">◉</div><h3>Transcrever</h3><p class="small">Grava ou recebe áudio e gera uma transcrição; disponibilidade e limites dependem da conta.</p></div>
+        <div class="card" style="--accent:#22c55e"><div class="card-icon">🔊</div><h3>Ler em voz alta</h3><p class="small">Ajuda a perceber palavras repetidas, frases longas e erros que passam na leitura silenciosa.</p></div>
+      </div><p class="note" style="margin-top:18px"><strong>Privacidade:</strong> não dite ou envie gravações com dados sensíveis sem autorização e sem conhecer as regras da instituição.</p>
+    </div></article>
+
+    <article class="slide" data-title="Estrutura de um trabalho longo"><div class="slide-inner split">
+      <div><div class="eyebrow">Documentos acadêmicos</div><h2 class="gradient-text">Estruture antes de decorar</h2><div class="steps">
+        <div class="step"><div><h3>Use Estilos de Título</h3><p>Título 1 para capítulos, Título 2 para seções e assim por diante.</p></div></div>
+        <div class="step"><div><h3>Separe seções</h3><p>Controle capa, numeração, orientação e cabeçalhos independentes.</p></div></div>
+        <div class="step"><div><h3>Use campos automáticos</h3><p>Sumário, legendas, referências cruzadas e números atualizáveis.</p></div></div>
+      </div></div>
+      <div class="card"><h3>Estrutura de exemplo</h3><div class="feature-cloud"><span>Capa</span><span>Resumo</span><span>Sumário</span><span>Introdução</span><span>Desenvolvimento</span><span>Conclusão</span><span>Referências</span><span>Apêndices</span></div><p class="note" style="margin-top:15px">Normas variam por instituição e finalidade. Use o modelo oficial quando fornecido.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Citações, fontes e bibliografia"><div class="slide-inner"><div class="eyebrow">Referências</div><h2 class="gradient-text">Registre de onde veio a informação</h2>
+      <div class="grid three">
+        <div class="card"><div class="card-icon">＋</div><h3>Gerenciar Fontes</h3><p class="small">Cadastre autor, título, ano, editora, site e outros dados.</p></div>
+        <div class="card"><div class="card-icon">“ ”</div><h3>Inserir Citação</h3><p class="small">Insere a referência no texto conforme o estilo escolhido.</p></div>
+        <div class="card"><div class="card-icon">≡</div><h3>Bibliografia</h3><p class="small">Gera uma lista automática com as fontes usadas.</p></div>
+      </div><p class="note" style="margin-top:18px">O Word automatiza a apresentação, mas você precisa conferir se os dados e o padrão exigido estão corretos. Alguns recursos de citação são mais completos no aplicativo de desktop.</p>
+    </div></article>
+
+    <article class="slide" data-title="Notas, legendas e referências cruzadas"><div class="slide-inner"><div class="eyebrow">Referências</div><h2 class="gradient-text">Elementos que se atualizam juntos</h2>
+      <div class="grid three">
+        <div class="card" style="--accent:#22d3ee"><div class="card-icon">¹</div><h3>Notas de rodapé/fim</h3><p class="small">Acrescentam explicações ou referências sem interromper o parágrafo.</p></div>
+        <div class="card" style="--accent:#2b7cd3"><div class="card-icon">Fig.</div><h3>Legendas</h3><p class="small">Numeram figuras, tabelas e equações: “Figura 1”, “Tabela 2”.</p></div>
+        <div class="card" style="--accent:#8b5cf6"><div class="card-icon">↗</div><h3>Referência cruzada</h3><p class="small">Cria “consulte a Figura 1” com número atualizável.</p></div>
+      </div><p class="note" style="margin-top:18px">Ao inserir ou remover itens, atualize os campos: selecione tudo com <strong>Ctrl + A</strong> e pressione <strong>F9</strong> no Word para Windows.</p>
+    </div></article>
+
+    <article class="slide" data-title="Sumário automático"><div class="slide-inner split">
+      <div><div class="eyebrow">Referências • Sumário</div><h2 class="gradient-text">O sumário nasce dos títulos</h2><div class="steps">
+        <div class="step"><div><h3>Aplique Título 1, 2, 3...</h3><p>Não basta deixar o texto grande e em negrito.</p></div></div>
+        <div class="step"><div><h3>Insira o sumário</h3><p>Referências → Sumário → escolha um modelo automático.</p></div></div>
+        <div class="step"><div><h3>Atualize após editar</h3><p>Atualize somente os números ou todo o sumário.</p></div></div>
+      </div></div>
+      <div class="card"><h3>Sumário</h3><div style="font-size:.78rem;line-height:2.1"><div>1 Introdução <span style="float:right">2</span></div><div>2 História da música <span style="float:right">4</span></div><div style="padding-left:18px">2.1 Ritmo <span style="float:right">5</span></div><div style="padding-left:18px">2.2 Melodia <span style="float:right">7</span></div><div>3 Conclusão <span style="float:right">10</span></div></div><p class="note" style="margin-top:14px">Se um item não aparece, verifique se ele recebeu o Estilo de Título correto.</p></div>
+    </div></article>
+
+    <article class="slide" data-title="Comentários, respostas e menções"><div class="slide-inner split">
+      <div><div class="eyebrow">Revisão colaborativa</div><h2 class="gradient-text">Converse sem alterar o texto</h2><p class="lead">Selecione um trecho e adicione um comentário. Responda, mencione alguém com <strong>@</strong> e resolva quando a questão for concluída.</p>
+        <div class="feature-cloud"><span>Novo comentário</span><span>@menção</span><span>Responder</span><span>Reagir</span><span>Resolver</span><span>Reabrir</span></div>
+      </div>
+      <div class="revision"><p>A apresentação será realizada <mark style="background:#fef08a">na próxima semana</mark>.</p><div class="comment"><strong>Raimundo:</strong> Podemos confirmar a data exata?<br><span style="color:#6b7280">Responder • Resolver</span></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Controlar Alterações"><div class="slide-inner split">
+      <div><div class="eyebrow">Revisão</div><h2 class="gradient-text">Veja exatamente o que mudou</h2><p class="lead">Com Controlar Alterações, inserções, exclusões e formatações ficam registradas para aceitar ou rejeitar.</p>
+        <div class="feature-cloud"><span>Para todos</span><span>Apenas as minhas</span><span>Marcação simples</span><span>Todas as marcações</span><span>Aceitar</span><span>Rejeitar</span></div>
+      </div>
+      <div class="revision"><p>O ensaio <span class="del">foi muito bom</span> <span class="ins">atingiu os objetivos planejados</span> e a equipe registrou os resultados.</p><div class="comment"><strong>Alteração de Ana:</strong> linguagem mais objetiva.</div><div class="choice-row"><button class="choice">✓ Aceitar</button><button class="choice">× Rejeitar</button></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Comparar e combinar documentos"><div class="slide-inner"><div class="eyebrow">Revisão avançada</div><h2 class="gradient-text">Quando existem duas versões do mesmo arquivo</h2>
+      <div class="grid two"><div class="card" style="--accent:#22d3ee"><div class="card-icon">⇄</div><h3>Comparar</h3><p class="small">Mostra diferenças entre o original e o revisado em um novo documento.</p></div><div class="card" style="--accent:#8b5cf6"><div class="card-icon">⋈</div><h3>Combinar</h3><p class="small">Reúne revisões de vários autores em um documento.</p></div></div>
+      <div class="scenario" style="margin-top:18px"><h3>Exemplo</h3><p class="small">Você enviou um relatório e recebeu “Relatorio_corrigido_Joao.docx”. Compare os arquivos para identificar cada mudança sem ler tudo lado a lado.</p></div><p class="note" style="margin-top:14px">Esse recurso é típico do Word para desktop.</p>
+    </div></article>
+
+    <article class="slide" data-title="Compartilhar e coeditar"><div class="slide-inner"><div class="eyebrow">OneDrive • Colaboração</div><h2 class="gradient-text">Um arquivo, várias pessoas</h2>
+      <div class="grid three">
+        <button class="permission" data-role="view"><h3>👁 Pode exibir</h3><p class="small">Lê sem modificar.</p></button>
+        <button class="permission" data-role="review"><h3>💬 Pode revisar</h3><p class="small">Comenta e propõe alterações conforme a configuração.</p></button>
+        <button class="permission" data-role="edit"><h3>✍ Pode editar</h3><p class="small">Altera o conteúdo diretamente.</p></button>
+      </div><div class="steps" style="margin-top:16px;grid-template-columns:repeat(3,1fr)"><div class="step"><div><h3>Salve na nuvem</h3><p>OneDrive ou SharePoint.</p></div></div><div class="step"><div><h3>Escolha a permissão</h3><p>Pessoa específica ou link, quando permitido.</p></div></div><div class="step"><div><h3>Trabalhem juntos</h3><p>Cursores e alterações podem aparecer em tempo real.</p></div></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Histórico de versões e recuperação"><div class="slide-inner split">
+      <div><div class="eyebrow">Segurança do trabalho</div><h2 class="gradient-text">Volte no tempo sem criar “final_final_3”</h2><p class="lead">Arquivos salvos no OneDrive ou SharePoint podem manter versões anteriores para visualizar e restaurar.</p>
+        <div class="feature-cloud"><span>Data e hora</span><span>Autor</span><span>Visualizar</span><span>Restaurar</span><span>Salvar cópia</span></div>
+      </div>
+      <div class="card"><h3>Linha do tempo</h3><div style="display:grid;gap:10px"><div class="permission selected"><strong>Hoje, 14:35</strong><p class="small">Versão atual • Raimundo</p></div><div class="permission"><strong>Hoje, 13:10</strong><p class="small">Revisão da conclusão</p></div><div class="permission"><strong>Ontem, 18:42</strong><p class="small">Estrutura inicial</p></div></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Acessibilidade"><div class="slide-inner"><div class="eyebrow">Documento para todos</div><h2 class="gradient-text">Acessível não é um detalhe: é qualidade</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">H1</div><h3>Títulos reais</h3><p class="small">Use Estilos para criar hierarquia compreensível.</p></div>
+        <div class="card"><div class="card-icon">ALT</div><h3>Texto alternativo</h3><p class="small">Descreva imagens informativas e marque as decorativas.</p></div>
+        <div class="card"><div class="card-icon">◐</div><h3>Contraste e cor</h3><p class="small">Garanta leitura e não dependa só da cor.</p></div>
+        <div class="card"><div class="card-icon">✓</div><h3>Verificador</h3><p class="small">Revisão → Verificar Acessibilidade explica problemas e soluções.</p></div>
+      </div><div class="grid two" style="margin-top:16px"><div class="card"><h3>Leitura Avançada</h3><p class="small">Pode ajustar largura, cor, espaçamento e leitura em voz alta.</p></div><div class="card"><h3>Tabelas simples</h3><p class="small">Use linha de cabeçalho, ordem lógica e evite células mescladas complexas.</p></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Mala direta"><div class="slide-inner split">
+      <div><div class="eyebrow">Correspondências • Desktop</div><h2 class="gradient-text">Um modelo, muitos documentos personalizados</h2><p class="lead">A mala direta combina um documento principal com uma fonte de dados, como uma planilha do Excel.</p>
+        <div class="feature-cloud"><span>Cartas</span><span>Certificados</span><span>Etiquetas</span><span>Envelopes</span><span>Emails</span></div>
+      </div>
+      <div class="steps"><div class="step"><div><h3>Documento principal</h3><p>Crie o texto e o layout comuns.</p></div></div><div class="step"><div><h3>Lista de destinatários</h3><p>Conecte nomes, emails e outros campos.</p></div></div><div class="step"><div><h3>Campos de mesclagem</h3><p>Insira «Nome», «Turma» ou «Nota».</p></div></div><div class="step"><div><h3>Visualize e conclua</h3><p>Revise antes de gerar, imprimir ou enviar.</p></div></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Integração, suplementos, macros e Copilot"><div class="slide-inner"><div class="eyebrow">Recursos avançados</div><h2 class="gradient-text">O Word pode ir além do documento</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">X</div><h3>Excel e objetos</h3><p class="small">Incorpore ou vincule planilhas, gráficos e outros arquivos no desktop.</p></div>
+        <div class="card"><div class="card-icon">＋</div><h3>Suplementos</h3><p class="small">Adicionam serviços e ferramentas aprovadas pela organização.</p></div>
+        <div class="card"><div class="card-icon">⚙</div><h3>Macros</h3><p class="small">Automatizam tarefas repetitivas. Exigem cuidado com segurança e não executam na Web.</p></div>
+        <div class="card"><div class="card-icon">✦</div><h3>Copilot*</h3><p class="small">Pode ajudar a redigir, resumir e transformar conteúdo quando a licença permite.</p></div>
+      </div><p class="note" style="margin-top:18px">Recursos marcados com * podem depender de assinatura, plano institucional, região, idioma e liberação gradual.</p>
+    </div></article>
+
+    <article class="slide" data-title="Proteção, edição restrita e documentos confiáveis"><div class="slide-inner"><div class="eyebrow">Segurança</div><h2 class="gradient-text">Proteja sem criar uma falsa sensação de segurança</h2>
+      <div class="grid three"><div class="card"><div class="card-icon">🔒</div><h3>Senha</h3><p class="small">O desktop pode criptografar o arquivo. Perder a senha pode significar perder o acesso.</p></div><div class="card"><div class="card-icon">✋</div><h3>Restringir edição</h3><p class="small">Limita formatação, comentários ou áreas editáveis.</p></div><div class="card"><div class="card-icon">🛡</div><h3>Modo de Exibição Protegido</h3><p class="small">Abre arquivos de origem arriscada com restrições antes de habilitar edição.</p></div></div>
+      <p class="note" style="margin-top:18px"><strong>Nunca habilite macros</strong> em arquivos inesperados. Confirme remetente e origem, mesmo quando o documento parece legítimo.</p>
+    </div></article>
+
+    <article class="slide" data-title="Imprimir e exportar para PDF"><div class="slide-inner split">
+      <div><div class="eyebrow">Entrega</div><h2 class="gradient-text">Confira antes de gastar papel ou enviar</h2><div class="steps"><div class="step"><div><h3>Abra a visualização</h3><p>Arquivo → Imprimir ou <strong>Ctrl + P</strong>.</p></div></div><div class="step"><div><h3>Verifique o intervalo</h3><p>Todas as páginas, página atual ou seleção.</p></div></div><div class="step"><div><h3>Ajuste impressão</h3><p>Impressora, frente e verso, orientação, papel e cópias.</p></div></div><div class="step"><div><h3>Exporte para PDF</h3><p>Preserve o layout para leitura e entrega.</p></div></div></div></div>
+      <div class="card"><h3>Checklist do PDF</h3><div class="checklist"><label class="check-item"><input type="checkbox"> Fontes e imagens aparecem corretamente</label><label class="check-item"><input type="checkbox"> Cabeçalhos e números estão certos</label><label class="check-item"><input type="checkbox"> Não há página em branco inesperada</label><label class="check-item"><input type="checkbox"> Links e sumário funcionam</label></div></div>
+    </div></article>
+
+    <article class="slide" data-title="Atalhos essenciais"><div class="slide-inner"><div class="eyebrow">Produtividade</div><h2 class="gradient-text">Menos cliques, mais foco</h2>
+      <div class="key-grid">
+        <div class="key-item"><span>Salvar</span><span class="keys"><kbd>Ctrl</kbd><kbd>S</kbd></span></div><div class="key-item"><span>Copiar</span><span class="keys"><kbd>Ctrl</kbd><kbd>C</kbd></span></div><div class="key-item"><span>Colar</span><span class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></span></div>
+        <div class="key-item"><span>Recortar</span><span class="keys"><kbd>Ctrl</kbd><kbd>X</kbd></span></div><div class="key-item"><span>Desfazer</span><span class="keys"><kbd>Ctrl</kbd><kbd>Z</kbd></span></div><div class="key-item"><span>Refazer</span><span class="keys"><kbd>Ctrl</kbd><kbd>Y</kbd></span></div>
+        <div class="key-item"><span>Selecionar tudo</span><span class="keys"><kbd>Ctrl</kbd><kbd>A</kbd></span></div><div class="key-item"><span>Localizar</span><span class="keys"><kbd>Ctrl</kbd><kbd>F</kbd></span></div><div class="key-item"><span>Substituir</span><span class="keys"><kbd>Ctrl</kbd><kbd>H</kbd></span></div>
+        <div class="key-item"><span>Negrito</span><span class="keys"><kbd>Ctrl</kbd><kbd>N</kbd></span></div><div class="key-item"><span>Hiperlink</span><span class="keys"><kbd>Ctrl</kbd><kbd>K</kbd></span></div><div class="key-item"><span>Quebra de página</span><span class="keys"><kbd>Ctrl</kbd><kbd>Enter</kbd></span></div>
+      </div><p class="small" style="margin-top:13px">Alguns atalhos variam por sistema, idioma e versão. Em macOS, muitos usam Command (⌘).</p>
+    </div></article>
+
+    <article class="slide" data-title="Boas práticas para documentos profissionais"><div class="slide-inner"><div class="eyebrow">Qualidade</div><h2 class="gradient-text">Um bom documento parece simples porque foi bem planejado</h2>
+      <div class="grid four">
+        <div class="card"><div class="card-icon">1</div><h3>Estruture</h3><p class="small">Planeje títulos, seções e sequência antes de formatar.</p></div>
+        <div class="card"><div class="card-icon">2</div><h3>Padronize</h3><p class="small">Use estilos, tema, espaçamentos e alinhamentos consistentes.</p></div>
+        <div class="card"><div class="card-icon">3</div><h3>Revise</h3><p class="small">Leia, ouça, verifique acessibilidade e confira dados.</p></div>
+        <div class="card"><div class="card-icon">4</div><h3>Entregue</h3><p class="small">Nome claro, formato certo e permissão adequada.</p></div>
+      </div><p class="note" style="margin-top:18px">Evite alinhar com espaços, criar distância com vários Enters, usar muitas fontes ou enviar links com permissão errada.</p>
+    </div></article>
+
+    <article class="slide" data-title="Atividade prática guiada"><div class="slide-inner"><div class="eyebrow">Mão na massa</div><h2 class="gradient-text">Crie um programa de apresentação musical</h2>
+      <div class="grid two">
+        <div class="checklist">
+          <label class="check-item"><input type="checkbox"> Criar e nomear o documento</label>
+          <label class="check-item"><input type="checkbox"> Inserir título e aplicar Estilo Título</label>
+          <label class="check-item"><input type="checkbox"> Escrever uma introdução com dois parágrafos</label>
+          <label class="check-item"><input type="checkbox"> Criar lista numerada com a ordem das apresentações</label>
+          <label class="check-item"><input type="checkbox"> Inserir tabela: música, intérprete e duração</label>
+        </div>
+        <div class="checklist">
+          <label class="check-item"><input type="checkbox"> Inserir uma imagem com texto alternativo</label>
+          <label class="check-item"><input type="checkbox"> Adicionar cabeçalho e número de página</label>
+          <label class="check-item"><input type="checkbox"> Executar Editor e Verificador de Acessibilidade</label>
+          <label class="check-item"><input type="checkbox"> Compartilhar com permissão “Pode exibir”</label>
+          <label class="check-item"><input type="checkbox"> Exportar uma cópia em PDF</label>
+        </div>
+      </div>
+    </div></article>
+
+    <article class="slide" data-title="Desafio: qual recurso usar?"><div class="slide-inner"><div class="eyebrow">Aplicação</div><h2 class="gradient-text">Transforme necessidades em ferramentas</h2>
+      <div class="grid two">
+        <div class="scenario"><h3>1. Quarenta certificados</h3><p class="small">Nomes e cursos estão em uma planilha. Qual recurso evita editar um por um?</p><span class="tag">Mala direta</span></div>
+        <div class="scenario"><h3>2. Relatório com capítulos</h3><p class="small">O sumário precisa atualizar quando páginas mudarem.</p><span class="tag">Estilos + Sumário automático</span></div>
+        <div class="scenario"><h3>3. Revisão do orientador</h3><p class="small">Você precisa ver e aceitar cada mudança.</p><span class="tag">Controlar Alterações</span></div>
+        <div class="scenario"><h3>4. Documento para publicação</h3><p class="small">O layout não pode mudar em outro computador.</p><span class="tag">Exportar PDF</span></div>
+      </div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 1 — Salvamento"><div class="slide-inner quiz-box" data-explain="O DOCX preserva a edição; o PDF é ideal para manter o layout na entrega."><div class="eyebrow">Quiz • 1 de 6</div><h2 class="gradient-text">Qual combinação é mais adequada para entregar e também manter uma versão editável?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false">Somente TXT</button><button class="quiz-option" data-correct="true">DOCX + PDF</button><button class="quiz-option" data-correct="false">Somente imagem</button><button class="quiz-option" data-correct="false">DOCM + ZIP</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 2 — Estrutura"><div class="slide-inner quiz-box" data-explain="Estilos de Título dão estrutura, alimentam o painel de navegação e permitem o sumário automático."><div class="eyebrow">Quiz • 2 de 6</div><h2 class="gradient-text">O que deve ser usado nos capítulos para gerar um sumário automático?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false">Aumentar a fonte manualmente</button><button class="quiz-option" data-correct="false">Inserir uma caixa de texto</button><button class="quiz-option" data-correct="true">Aplicar Estilos de Título</button><button class="quiz-option" data-correct="false">Usar vários espaços</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 3 — Revisão"><div class="slide-inner quiz-box" data-explain="Controlar Alterações registra inserções, exclusões e formatações para aceitar ou rejeitar."><div class="eyebrow">Quiz • 3 de 6</div><h2 class="gradient-text">Qual recurso permite analisar cada modificação feita por outra pessoa?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false">Modo de Leitura</button><button class="quiz-option" data-correct="true">Controlar Alterações</button><button class="quiz-option" data-correct="false">Marca d’água</button><button class="quiz-option" data-correct="false">Mala direta</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 4 — Páginas"><div class="slide-inner quiz-box" data-explain="A quebra de seção permite mudar a orientação apenas em parte do documento."><div class="eyebrow">Quiz • 4 de 6</div><h2 class="gradient-text">Como deixar apenas uma página em paisagem no meio de um relatório?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false">Usar vários Enters</button><button class="quiz-option" data-correct="false">Diminuir o zoom</button><button class="quiz-option" data-correct="true">Criar quebras de seção antes e depois</button><button class="quiz-option" data-correct="false">Converter tudo para imagem</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 5 — Colaboração"><div class="slide-inner quiz-box" data-explain="A permissão “Pode exibir” permite leitura sem autorizar alterações no conteúdo."><div class="eyebrow">Quiz • 5 de 6</div><h2 class="gradient-text">Qual permissão usar quando alguém deve apenas ler o documento?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="true">Pode exibir</button><button class="quiz-option" data-correct="false">Pode editar</button><button class="quiz-option" data-correct="false">Proprietário</button><button class="quiz-option" data-correct="false">Controle total</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Quiz 6 — Acessibilidade"><div class="slide-inner quiz-box" data-explain="O texto alternativo comunica a informação da imagem a pessoas que utilizam leitor de tela."><div class="eyebrow">Quiz • 6 de 6</div><h2 class="gradient-text">O que ajuda uma pessoa com leitor de tela a compreender uma imagem?</h2>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false">Uma borda colorida</button><button class="quiz-option" data-correct="false">Um tamanho maior</button><button class="quiz-option" data-correct="false">Uma sombra</button><button class="quiz-option" data-correct="true">Texto alternativo adequado</button></div><div class="feedback"></div>
+    </div></article>
+
+    <article class="slide" data-title="Resultado e conclusão"><div class="slide-inner"><div class="eyebrow">Conclusão</div><h2 class="gradient-text" style="text-align:center">Agora é sua vez de produzir</h2>
+      <div class="grid two" style="align-items:center"><div><div class="score-ring" id="scoreRing"><strong id="scoreValue">0/6</strong><small>acertos</small></div><p class="small" id="scoreMsg" style="text-align:center;margin-top:16px">Responda às 6 questões.</p></div>
+      <div><p class="lead">O Word se torna muito mais simples quando você pensa em quatro ações:</p><div class="feature-cloud"><span>Escrever</span><span>Estruturar</span><span>Revisar</span><span>Compartilhar</span></div><p class="note" style="margin-top:18px">Domine primeiro os recursos essenciais. Depois, explore os avançados conforme a necessidade do seu documento.</p></div></div>
+    </div><div class="teacher">Prof. Raimundo Carvalho • IFPB</div></article>
+  </section>
+  <nav class="bottom-nav" aria-label="Navegação dos slides">
+    <button class="nav-btn" id="prevBtn" aria-label="Slide anterior">←</button>
+    <div class="nav-title"><strong id="navTitle">Microsoft Word 365</strong><small>Use ← → ou deslize na tela</small></div>
+    <button class="nav-btn" id="nextBtn" aria-label="Próximo slide">→</button>
+  </nav>
+
+  <div class="overlay" id="overview"><div class="modal"><div class="modal-head"><h3>Visão geral da aula</h3><button class="close" data-close="overview">×</button></div><div class="overview-grid" id="overviewGrid"></div></div></div>
+  <div class="overlay" id="sources"><div class="modal"><div class="modal-head"><h3>Fontes oficiais e leituras</h3><button class="close" data-close="sources">×</button></div>
+    <div class="source-list">
+      <a href="https://support.microsoft.com/pt-br/word/" target="_blank" rel="noopener">Microsoft — Auxílio e aprendizado do Word</a>
+      <a href="https://support.microsoft.com/pt-br/word/word-features-comparison-word-for-the-web-vs-desktop" target="_blank" rel="noopener">Microsoft — Comparação: Word para a Web × Word para desktop</a>
+      <a href="https://support.microsoft.com/pt-BR/Word/training/collaborate-in-word" target="_blank" rel="noopener">Microsoft — Colaborar no Word</a>
+      <a href="https://support.microsoft.com/pt-BR/Word/training/track-changes-in-word" target="_blank" rel="noopener">Microsoft — Controlar alterações</a>
+      <a href="https://support.microsoft.com/pt-br/office/inserir-um-sum%C3%A1rio-882e8564-0edb-435e-84b5-1d8552ccf0c0" target="_blank" rel="noopener">Microsoft — Inserir um sumário</a>
+      <a href="https://support.microsoft.com/pt-br/word/use-mail-merge-for-bulk-email-letters-labels-and-envelopes" target="_blank" rel="noopener">Microsoft — Mala direta</a>
+      <a href="https://support.microsoft.com/pt-br/accessibility/office-accessibility/rules-for-the-accessibility-checker" target="_blank" rel="noopener">Microsoft — Verificador de Acessibilidade</a>
+      <a href="https://support.microsoft.com/pt-BR/accessibility/word/use-immersive-reader-in-word" target="_blank" rel="noopener">Microsoft — Leitura Avançada</a>
+    </div><p class="small" style="margin-top:16px">Observação: menus e recursos podem variar conforme Windows, macOS, Web, dispositivo, licença e atualização do Microsoft 365.</p>
+  </div></div>
+  <div class="overlay" id="help"><div class="modal"><div class="modal-head"><h3>Como usar a apresentação</h3><button class="close" data-close="help">×</button></div><div class="help-grid">
+    <div class="help-item"><strong>← / →</strong><br><span class="small">Avançar e voltar slides.</span></div>
+    <div class="help-item"><strong>Home / End</strong><br><span class="small">Ir ao primeiro ou ao último slide.</span></div>
+    <div class="help-item"><strong>Esc</strong><br><span class="small">Fechar janelas e sair da tela cheia.</span></div>
+    <div class="help-item"><strong>Toque e arraste</strong><br><span class="small">Navegar em telas sensíveis ao toque.</span></div>
+    <div class="help-item"><strong>Visão geral</strong><br><span class="small">Escolher qualquer parte da aula.</span></div>
+    <div class="help-item"><strong>Imprimir</strong><br><span class="small">O navegador organiza um slide por página.</span></div>
+  </div></div></div>
+</main>
+<script>
+  const slides=[...document.querySelectorAll('.slide')], progress=document.getElementById('progressBar'), counter=document.getElementById('counter'), navTitle=document.getElementById('navTitle'), prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
+  let current=0, touchX=null, quizScore=0, quizAnswered=0;
+  function showSlide(i){current=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,n)=>s.classList.toggle('active',n===current));progress.style.width=((current+1)/slides.length*100)+'%';counter.textContent=(current+1)+' / '+slides.length;navTitle.textContent=slides[current]?.dataset.title||'';prev.disabled=current===0;next.disabled=current===slides.length-1;document.querySelectorAll('.thumb').forEach((b,n)=>b.classList.toggle('current',n===current));}
+  prev.addEventListener('click',()=>showSlide(current-1));next.addEventListener('click',()=>showSlide(current+1));
+  document.addEventListener('keydown',e=>{if(document.querySelector('.overlay.open')){if(e.key==='Escape')document.querySelector('.overlay.open').classList.remove('open');return}if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();showSlide(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();showSlide(current-1)}if(e.key==='Home')showSlide(0);if(e.key==='End')showSlide(slides.length-1)});
+  document.addEventListener('touchstart',e=>touchX=e.changedTouches[0].clientX,{passive:true});document.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>55)showSlide(current+(d<0?1:-1));touchX=null},{passive:true});
+  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.open).classList.add('open')));document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.close).classList.remove('open')));document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+  document.getElementById('fullscreenBtn').addEventListener('click',()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen());
+  const overview=document.getElementById('overviewGrid');slides.forEach((s,i)=>{const b=document.createElement('button');b.className='thumb';b.innerHTML='<span>SLIDE '+String(i+1).padStart(2,'0')+'</span><strong>'+s.dataset.title+'</strong>';b.addEventListener('click',()=>{showSlide(i);document.getElementById('overview').classList.remove('open')});overview.appendChild(b)});
+  for(let i=0;i<24;i++){const p=document.createElement('i');p.className='particle';p.style.left=(Math.random()*100)+'%';p.style.animationDelay=(-Math.random()*13)+'s';p.style.animationDuration=(10+Math.random()*9)+'s';document.getElementById('ambient').appendChild(p)}
+  document.querySelectorAll('.ribbon-tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.ribbon-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const data={inicio:['Área de transferência','Fonte','Parágrafo','Estilos'],inserir:['Páginas','Tabelas','Ilustrações','Links'],layout:['Configurar página','Parágrafo','Organizar','Quebras'],revisao:['Editor','Comentários','Controlar alterações','Acessibilidade']}[t.dataset.ribbon];document.getElementById('ribbonPanel').innerHTML=data.map((x,i)=>'<div class="ribbon-group"><strong>'+x+'</strong><span>'+['Comandos relacionados e atalhos visuais.','Opções para o conteúdo selecionado.','Ferramentas de organização do documento.','Ações de revisão e acabamento.'][i]+'</span></div>').join('')}));
+  document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('active');const s=document.getElementById('formatText');s.style.fontWeight=document.querySelector('[data-format="bold"]').classList.contains('active')?'800':'400';s.style.fontStyle=document.querySelector('[data-format="italic"]').classList.contains('active')?'italic':'normal';s.style.textDecoration=document.querySelector('[data-format="underline"]').classList.contains('active')?'underline':'none';s.style.color=document.querySelector('[data-format="color"]').classList.contains('active')?'#185abd':'#202124'}));
+  document.querySelectorAll('[data-align]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-align]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('paragraphDemo').style.textAlign=b.dataset.align}));
+  document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('selected');const p=document.getElementById('pageVisual');if(b.dataset.page==='landscape')p.classList.toggle('landscape');if(b.dataset.page==='margin')p.classList.toggle('wide-margin')}));
+  document.querySelectorAll('[data-wrap]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-wrap]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');const d=document.getElementById('wrapDemo');d.className='wrap-demo '+b.dataset.wrap}));
+  document.querySelectorAll('[data-role]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-role]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')}));
+  document.querySelectorAll('.check-item').forEach(x=>x.addEventListener('change',()=>x.classList.toggle('done',x.querySelector('input').checked)));
+  document.querySelectorAll('.quiz-option').forEach(b=>b.addEventListener('click',()=>{const box=b.closest('.quiz-box');if(box.dataset.done)return;box.dataset.done='1';quizAnswered++;const correct=b.dataset.correct==='true';if(correct)quizScore++;b.classList.add(correct?'correct':'wrong');if(!correct)box.querySelector('[data-correct="true"]').classList.add('correct');box.querySelectorAll('.quiz-option').forEach(x=>x.disabled=true);const f=box.querySelector('.feedback');f.textContent=(correct?'✓ Correto! ':'✗ Revise: ')+box.dataset.explain;f.classList.add('show');updateScore()}));
+  function updateScore(){const value=document.getElementById('scoreValue'),ring=document.getElementById('scoreRing'),msg=document.getElementById('scoreMsg');if(!value)return;value.textContent=quizScore+'/6';ring.style.setProperty('--score-angle',(quizScore/6*360)+'deg');msg.textContent=quizAnswered<6?'Responda às '+(6-quizAnswered)+' questão(ões) restante(s).':quizScore>=5?'Excelente! Você dominou os recursos essenciais.':quizScore>=3?'Muito bem! Revise os pontos que errou.':'Volte aos slides principais e tente novamente.'}
+  showSlide(0);
+</script>
+</body>
+</html>
