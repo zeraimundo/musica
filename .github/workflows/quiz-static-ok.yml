@@ -1,0 +1,32 @@
+name: Ajustar quizzes estáticos
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/quiz-static-ok.yml']
+permissions:
+  contents: write
+jobs:
+  ajustar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Embaralhar alternativas marcadas com data-ok
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          marker='STATIC_DATA_OK_SHUFFLE'
+          js='''\n<script>/* STATIC_DATA_OK_SHUFFLE */document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.answers').forEach(p=>{if(p.dataset.quizOkShuffled)return;const kids=[...p.children].filter(x=>x.matches('button,.ans,.option'));if(kids.length<2||!kids.some(x=>x.hasAttribute('data-ok')))return;for(let i=kids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[kids[i],kids[j]]=[kids[j],kids[i]]}kids.forEach(x=>p.appendChild(x));p.dataset.quizOkShuffled='1'})});</script>\n'''
+          changed=[]
+          for p in Path('.').rglob('*.html'):
+              if '.git' in p.parts or '.github' in p.parts: continue
+              s=p.read_text(encoding='utf-8')
+              if 'data-ok' not in s or marker in s: continue
+              s=s.replace('</body>',js+'</body>')
+              p.write_text(s,encoding='utf-8'); changed.append(str(p))
+          print(changed)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --ignore-unmatch .github/workflows/quiz-static-ok.yml
+          git add -A
+          git diff --cached --quiet || (git commit -m 'Embaralha alternativas dos quizzes estáticos' && git push)
