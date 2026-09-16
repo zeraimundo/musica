@@ -1958,6 +1958,9 @@
         { q:'9. Em uma gravação musical, o microfone funciona principalmente como dispositivo de…', o:['Entrada','Saída','Armazenamento','Processamento central'], a:0, e:'O microfone captura o som e fornece um sinal de entrada ao sistema.' },
         { q:'10. Uma DAW, usada para gravar e editar áudio, é exemplo de…', o:['Hardware de entrada','Software aplicativo','Memória permanente','Fonte de alimentação'], a:1, e:'Uma DAW é um aplicativo voltado à produção e edição de áudio.' }
       ];
+/* QUIZ_SHUFFLE:quizData */
+(()=>{const q=quizData;if(!Array.isArray(q)||!q.length)return;const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};const pos=sh(q.map((_,i)=>i%4));q.forEach((it,n)=>{let o=null,c=null;if(Array.isArray(it.o)&&Number.isInteger(it.a)){o='o';c='a'}else if(Array.isArray(it.a)&&Number.isInteger(it.c)){o='a';c='c'}else if(Array.isArray(it.options)&&Number.isInteger(it.correctIndex)){o='options';c='correctIndex'}else if(Array.isArray(it.options)&&Number.isInteger(it.correct)){o='options';c='correct'}else if(Array.isArray(it.answers)&&Number.isInteger(it.correct)){o='answers';c='correct'}if(!o)return;const ar=it[o],idx=it[c];if(idx<0||idx>=ar.length||ar.length<2)return;const right=ar[idx],rest=ar.filter((_,i)=>i!==idx);sh(rest);const t=pos[n]%ar.length;rest.splice(t,0,right);it[o]=rest;it[c]=t})})();
+
       let quizIndex = 0, quizPoints = 0, quizAnswered = false;
       const quizCard = document.getElementById('quizCard');
       const renderQuiz = () => {
