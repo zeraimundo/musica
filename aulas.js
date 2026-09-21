@@ -14,8 +14,8 @@ window.PORTAL_CONFIG = {
   course: "Curso Subsequente de Música",
   institution: "IFPB — Campus João Pessoa",
   professor: "Prof. Raimundo Carvalho",
-  updatedAt: "31 de agosto de 2026",
-  currentId: "word-365"
+  updatedAt: "21 de setembro de 2026",
+  currentId: "excel-365"
 };
 
 window.AULAS = [
@@ -64,12 +64,24 @@ window.AULAS = [
     topics: ["Microsoft Word", "Formatação", "Colaboração", "Prática"],
     slideCount: 54,
     icon: "W",
-    status: "current",
+    status: "published",
     href: "slides/Word_Office_365_Aula_Interativa.html"
   },
   {
-    id: "proxima-aula",
+    id: "excel-365",
     number: 5,
+    date: "21 set. 2026",
+    title: "Microsoft Excel 365: Fundamentos e Análise",
+    description: "Interface, fórmulas, operadores, funções essenciais, pesquisas, gráficos, tabela dinâmica e prática aplicada à Música.",
+    topics: ["Microsoft Excel", "Fórmulas", "Gráficos", "Tabela dinâmica"],
+    slideCount: 61,
+    icon: "X",
+    status: "current",
+    href: "slides/Excel_Microsoft_365_Aula_Interativa.html"
+  },
+  {
+    id: "proxima-aula",
+    number: 6,
     date: "Próxima semana",
     title: "Próxima aula",
     description: "O novo material aparecerá aqui assim que estiver pronto, mantendo todo o conteúdo do período em um só lugar.",
