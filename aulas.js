@@ -14,8 +14,8 @@ window.PORTAL_CONFIG = {
   course: "Curso Subsequente de Música",
   institution: "IFPB — Campus João Pessoa",
   professor: "Prof. Raimundo Carvalho",
-  updatedAt: "21 de setembro de 2026",
-  currentId: "excel-365"
+  updatedAt: "9 de novembro de 2026",
+  currentId: "powerpoint-365"
 };
 
 window.AULAS = [
@@ -76,12 +76,24 @@ window.AULAS = [
     topics: ["Microsoft Excel", "Fórmulas", "Gráficos", "Tabela dinâmica"],
     slideCount: 61,
     icon: "X",
-    status: "current",
+    status: "published",
     href: "slides/Excel_Microsoft_365_Aula_Interativa.html"
   },
   {
-    id: "proxima-aula",
+    id: "powerpoint-365",
     number: 6,
+    date: "9 nov. 2026",
+    title: "Microsoft PowerPoint 365: Criação e Apresentação",
+    description: "Interface, layouts, temas, imagens, dados, multimídia, transições, animações, apresentação, colaboração e acessibilidade.",
+    topics: ["Microsoft PowerPoint", "Design", "Multimídia", "Apresentação"],
+    slideCount: 59,
+    icon: "P",
+    status: "current",
+    href: "slides/PowerPoint_Microsoft_365_Aula_Interativa.html"
+  },
+  {
+    id: "proxima-aula",
+    number: 7,
     date: "Próxima semana",
     title: "Próxima aula",
     description: "O novo material aparecerá aqui assim que estiver pronto, mantendo todo o conteúdo do período em um só lugar.",
