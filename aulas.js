@@ -14,8 +14,8 @@ window.PORTAL_CONFIG = {
   course: "Curso Subsequente de Música",
   institution: "IFPB — Campus João Pessoa",
   professor: "Prof. Raimundo Carvalho",
-  updatedAt: "9 de novembro de 2026",
-  currentId: "powerpoint-365"
+  updatedAt: "10 de novembro de 2026",
+  currentId: "scratch-aula-1"
 };
 
 window.AULAS = [
@@ -88,12 +88,38 @@ window.AULAS = [
     topics: ["Microsoft PowerPoint", "Design", "Multimídia", "Apresentação"],
     slideCount: 59,
     icon: "P",
-    status: "current",
+    status: "published",
     href: "slides/PowerPoint_Microsoft_365_Aula_Interativa.html"
   },
   {
-    id: "proxima-aula",
+    id: "scratch-aula-1",
     number: 7,
+    date: "10 nov. 2026",
+    title: "Bloco III: Computação Criativa e Scratch",
+    description: "Programação, algoritmos, computação criativa, interface do Scratch e primeiro projeto musical com movimento, fala e som.",
+    topics: ["Programação", "Scratch", "Computação criativa", "Projeto musical"],
+    slideCount: 45,
+    icon: "S",
+    status: "current",
+    href: "slides/Bloco_III_Aula_1_Computacao_Criativa_Scratch.html",
+    materials: [
+      {
+        label: "Guia do professor",
+        href: "materiais/bloco-3-aula-1/Guia_do_Professor_Aula_1_Computacao_Criativa_Scratch.docx"
+      },
+      {
+        label: "Atividade guiada",
+        href: "materiais/bloco-3-aula-1/Atividade_Aula_1_Meu_Primeiro_Instrumento_Animado.docx"
+      },
+      {
+        label: "Projeto Scratch",
+        href: "materiais/bloco-3-aula-1/Meu_Primeiro_Instrumento_Animado.sb3"
+      }
+    ]
+  },
+  {
+    id: "proxima-aula",
+    number: 8,
     date: "Próxima semana",
     title: "Próxima aula",
     description: "O novo material aparecerá aqui assim que estiver pronto, mantendo todo o conteúdo do período em um só lugar.",
